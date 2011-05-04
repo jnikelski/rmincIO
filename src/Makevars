@@ -1,0 +1,2 @@
+PKG_CPPFLAGS = -I/usr/local/bic/current/include -Wall
+PKG_LIBS = -L/usr/local/bic/current/lib -lminc2 -lhdf5 -lz -lnetcdf -lm 
