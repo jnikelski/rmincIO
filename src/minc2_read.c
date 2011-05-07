@@ -210,7 +210,7 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 	}
 
 	/* set the apparent order to something conventional */
-	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: Setting the apparent order for %d dimensions ... ", no_dimensions);
+	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: Setting the apparent order for %d dimensions ... \n", no_dimensions);
 	if ( no_dimensions == 3 ) {
 		result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 	} else if ( no_dimensions == 4 ) {

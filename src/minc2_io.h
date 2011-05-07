@@ -11,7 +11,7 @@
 // R return list size (number of list elements)
 #define R_RTN_LIST_LEN 15
 // debug switch
-#define R_DEBUG_rminc2 1
+#define R_DEBUG_rminc2 0
 
 //#define FALSE 0
 //#define TRUE 1
