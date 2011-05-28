@@ -32,7 +32,7 @@ void R_init_rminc2(DllInfo *info) {
 	// load the hdf5 shared library (just to see if we can)
 	if ( R_DEBUG_rminc2 ) Rprintf("Pointer to library prior to dlopen call: %lu\n", minc2_dl_chkptr);
 	if ( R_DEBUG_rminc2 ) Rprintf("Attempting to load the minc2 library ... ");
-	minc2_dl_chkptr = dlopen("libminc2.so", RTLD_LOCAL | RTLD_LAZY);
+	//minc2_dl_chkptr = dlopen("libminc2.so", RTLD_LOCAL | RTLD_LAZY);
 	// if ( !hdf_dl_chkptr ) {
 	// 	Rprintf ("Nope. \nError: %s\n", dlerror());
 	// 	exit(1);

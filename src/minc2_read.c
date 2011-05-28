@@ -229,17 +229,17 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 
    // this is for fun and Debug confirmation
    result = miget_hyperslab_size(MI_TYPE_DOUBLE, no_dimensions, hSlab_count, &hSlab_size);
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: hSlab_size = %d\n", hSlab_size);
-
+   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: hSlab_size in bytes = %d\n", hSlab_size);
 
    
    if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: Attempting a calloc of %d bytes\n", hSlab_num_entries * sizeof (double));
    //hSlab_read_buffer = (double *) R_alloc(hSlab_num_entries, sizeof (double));
-   hSlab_read_buffer = calloc(hSlab_num_entries, sizeof (double)*2);
+   hSlab_read_buffer = calloc(hSlab_num_entries, sizeof (double));
    if ( hSlab_read_buffer == NULL ) {
       error("Error in calloc, allocating %d %d-byte entries\n", hSlab_num_entries, sizeof (double));
    }
    
+
    result = miget_real_value_hyperslab(minc_volume, MI_TYPE_DOUBLE,
 														hSlab_start,
 														hSlab_count,
@@ -247,15 +247,17 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 	if ( result != MI_NOERROR ) {
 		error("Error in miget_real_value_hyperslab: %s.\n", CHAR(STRING_ELT(filename, 0)));
 	}
+   //if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: NOT CALLING miget_real_value_hyperslab\n");
 	
 
    // move slice data from buffer into vector SEXP
    //
 	// allocate receiving matrix (3-D volumes always only return 1 column)
-   if ( R_DEBUG_rminc2 ) Rprintf("allocVector: size is %d doubles\n", hSlab_num_entries);
+   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: allocVector: size is %d doubles\n", hSlab_num_entries);
    PROTECT(hSlab_vector=allocVector(REALSXP, hSlab_num_entries));
 
    // copy data
+   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: copy %d double entries from read_buffer to hSlab_vector\n", hSlab_num_entries);
    for (ndx=0; ndx< hSlab_num_entries;ndx++) {
       REAL(hSlab_vector)[ndx] = hSlab_read_buffer[ndx];
    }
@@ -266,6 +268,8 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
    hSlab_read_buffer = NULL;
 	UNPROTECT(1);
 	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: returning ...\n");
+   R_CheckStack();
+   //Rf_R_CheckStack();
 	return(hSlab_vector);
 }
 
