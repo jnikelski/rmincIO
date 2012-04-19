@@ -9,7 +9,7 @@ Description: A package for reading and writing MINC2 files
 Depends: R (>= 2.10.0), grDevices, methods, grid, lattice
 Suggests: nlme, qvalue
 License: BSD
-Collate: AllGeneric.R
+Collate: AllGeneric.R rmincUtil.R
          mincInfo_class.R mincVolumeIO_class.R mincSlice_class.R
          mincSliceIO_class.R mincVoxelIO_class.R
          civet.R 
