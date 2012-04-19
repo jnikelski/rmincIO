@@ -64,14 +64,14 @@ in the very bowels of the original \pkg{RMINC} package.
 # into a voxel array.  Start with the 3D case.
 v305 <- file.path(volDir, "average305_PET_t1_tal_lin.mnc")
 worldCoords <- c(0,0,0)
-voxCoords <- rminc.convertWorldToVoxel(v305, worldCoords)
+voxCoords <- rmincUtil.convertWorldToVoxel(v305, worldCoords)
 voxelArray <- mincIO.readByVoxel(c(v305, v305, v305, v305, v305), voxCoords)
 print(voxelArray)
 
 # 4D case with 34 frames
 v4d <- file.path(volDir, "functional_4D.mnc")
 worldCoords <- c(0,0,0)
-voxCoords <- rminc.convertWorldToVoxel(v4d, worldCoords)
+voxCoords <- rmincUtil.convertWorldToVoxel(v4d, worldCoords)
 voxelArray <- mincIO.readByVoxel(c(v4d, v4d, v4d, v4d, v4d), voxCoords)
 print(voxelArray)
 }}

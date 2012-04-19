@@ -1,6 +1,6 @@
-\name{rmincIO.getDataClasses}
+\name{rmincUtil.getDataClasses}
 \Rdversion{1.1}
-\alias{rmincIO.getDataClasses}
+\alias{rmincUtil.getDataClasses}
 
 \title{
     Get Minc2 Data Classes
@@ -9,7 +9,7 @@
     Returns a data.frame containing the minc2 data classes.
 }
 \usage{
-rmincIO.getDataClasses()
+rmincUtil.getDataClasses()
 }
 
 \details{
@@ -24,12 +24,12 @@ rmincIO.getDataClasses()
 \author{Jim Nikelski \email{nikelski@bic.mni.mcgill.ca}}
 
 \examples{
-dataClasses <- rmincIO.getDataClasses()
+dataClasses <- rmincUtil.getDataClasses()
 print(dataClasses)
 }
 
 \seealso{
-    \code{\link{rmincIO.getDataTypes}}
+    \code{\link{rmincUtil.getDataTypes}}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

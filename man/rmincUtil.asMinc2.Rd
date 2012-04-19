@@ -1,6 +1,6 @@
-\name{rmincIO.asMinc2}
+\name{rmincUtil.asMinc2}
 \Rdversion{1.1}
-\alias{rmincIO.asMinc2}
+\alias{rmincUtil.asMinc2}
 \title{
 Convert Volume to Minc2 Format
 }
@@ -10,7 +10,7 @@ Convert Volume to Minc2 Format
 }
 
 \usage{
-rmincIO.asMinc2(filename, keepName = TRUE)
+rmincUtil.asMinc2(filename, keepName = TRUE)
 }
 
 \arguments{
@@ -27,13 +27,13 @@ rmincIO.asMinc2(filename, keepName = TRUE)
 \author{Jim Nikelski \email{nikelski@bic.mni.mcgill.ca}}
 
 \seealso{
-     \code{\link{rmincIO.isMinc1}} \code{\link{rmincIO.isMinc2}} \code{\link{rmincIO.isMinc}} \code{\link{rmincIO.isReadable}}
+     \code{\link{rmincUtil.isMinc1}} \code{\link{rmincUtil.isMinc2}} \code{\link{rmincUtil.isMinc}} \code{\link{rmincUtil.isReadable}}
 }
 
 \examples{
 \dontrun{
 myVolume1 <- "happy_little_minc1_volume.mnc"
-myVolume2 <- rmincIO.asMinc2(myVolume1)
+myVolume2 <- rmincUtil.asMinc2(myVolume1)
 }
 }
 

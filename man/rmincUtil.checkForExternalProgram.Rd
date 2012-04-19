@@ -1,6 +1,6 @@
-\name{rmincIO.checkForExternalProgram}
+\name{rmincUtil.checkForExternalProgram}
 \Rdversion{1.1}
-\alias{rmincIO.checkForExternalProgram}
+\alias{rmincUtil.checkForExternalProgram}
 
 \title{
     Check the Availability of an External Program or Script
@@ -10,7 +10,7 @@
 }
 
 \usage{
-rmincIO.checkForExternalProgram(program, test_string, prog_options="")
+rmincUtil.checkForExternalProgram(program, test_string, prog_options="")
 }
 
 \arguments{
@@ -39,7 +39,7 @@ library(rmincIO)
 program <- "xfm2param_nonexisting"
 progOptions <- "-version"
 test_string <- "mni_autoreg"
-status <- rmincIO.checkForExternalProgram(program, test_string, progOptions)
+status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions)
 if ( !status ) { ... }
 
 }}

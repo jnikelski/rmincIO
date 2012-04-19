@@ -1,6 +1,6 @@
-\name{rmincIO.getDataTypes}
+\name{rmincUtil.getDataTypes}
 \Rdversion{1.1}
-\alias{rmincIO.getDataTypes}
+\alias{rmincUtil.getDataTypes}
 \title{
     Get Minc2 Data Types
 }
@@ -9,7 +9,7 @@
 }
 
 \usage{
-rmincIO.getDataTypes()
+rmincUtil.getDataTypes()
 }
 
 \details{
@@ -23,12 +23,12 @@ rmincIO.getDataTypes()
 \author{Jim Nikelski \email{nikelski@bic.mni.mcgill.ca}}
 
 \examples{
-dataTypes <- rmincIO.getDataTypes()
+dataTypes <- rmincUtil.getDataTypes()
 print(dataTypes)
 }
 
 \seealso{
-    \code{\link{rmincIO.getDataClasses}}
+    \code{\link{rmincUtil.getDataClasses}}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

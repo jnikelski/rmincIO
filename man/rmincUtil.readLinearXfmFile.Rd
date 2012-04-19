@@ -1,6 +1,6 @@
-\name{rmincIO.readLinearXfmFile}
+\name{rmincUtil.readLinearXfmFile}
 \Rdversion{1.1}
-\alias{rmincIO.readLinearXfmFile}
+\alias{rmincUtil.readLinearXfmFile}
 
 \title{
     Read a Linear XFM File
@@ -10,7 +10,7 @@
 }
 
 \usage{
-rmincIO.readLinearXfmFile(xfmFilename)
+rmincUtil.readLinearXfmFile(xfmFilename)
 }
 
 \arguments{
@@ -37,7 +37,7 @@ baseDir <- "~/tmp/ADNI/civet/pipeOut"
 
 # read in the linear xfm file from Civet
 xfmname <- civet.getFilenameLinearTransform(scanID, baseDir)
-xfm.df <- rmincIO.readLinearXfmFile(xfmname)
+xfm.df <- rmincUtil.readLinearXfmFile(xfmname)
 
 # extract the x-scaling factor
 xScale <- xfm.df["scale", "x"]

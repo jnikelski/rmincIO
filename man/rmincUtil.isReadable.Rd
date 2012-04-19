@@ -1,6 +1,6 @@
-\name{rmincIO.isReadable}
+\name{rmincUtil.isReadable}
 \Rdversion{1.1}
-\alias{rmincIO.isReadable}
+\alias{rmincUtil.isReadable}
 \title{
     Check Read Permissions for Files
 }
@@ -9,7 +9,7 @@
     not readable, \code{FALSE} is returned.
 }
 \usage{
-rmincIO.isReadable(filenames)
+rmincUtil.isReadable(filenames)
 }
 
 \arguments{
@@ -33,13 +33,13 @@ rmincIO.isReadable(filenames)
 }
 
 \seealso{
-    \code{\link{rmincIO.isMinc}} \code{\link{rmincIO.isMinc1}} \code{\link{rmincIO.isMinc2}} \code{\link{rmincIO.asMinc2}}
+    \code{\link{rmincUtil.isMinc}} \code{\link{rmincUtil.isMinc1}} \code{\link{rmincUtil.isMinc2}} \code{\link{rmincUtil.asMinc2}}
 }
 \examples{
 \dontrun{
 # check for readability of a bunch of files
 myFiles <- list.files(pattern=".mnc$")     # get all minc files in current directory
-if ( !rmincIO.isReadable(myFiles) ) {        # test for readability
+if ( !rmincUtil.isReadable(myFiles) ) {        # test for readability
     error("One of the files was unreadable.  Very sad, that.") 
 }
 }}
