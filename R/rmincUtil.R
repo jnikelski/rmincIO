@@ -101,7 +101,7 @@ rmincUtil.convertVoxelToWorld <- function(filename, voxCoords) {
 	# dunno why, but the voxel coordinates are passed as doubles
 	output <- .Call("convert_voxel_to_world_mincIO",
                as.character(filename),
-               as.double(voxCoords), PACKAGE="rmincUtil")
+               as.double(voxCoords), PACKAGE="rmincIO")
 
 	# return a vector of 3 doubles
 	if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.convertVoxelToWorld\n"))
@@ -117,7 +117,7 @@ rmincUtil.convertWorldToVoxel <- function(filename, worldCoords) {
 
 	output <- .Call("convert_world_to_voxel_mincIO",
                as.character(filename),
-               as.double(worldCoords), PACKAGE="rmincUtil")
+               as.double(worldCoords), PACKAGE="rmincIO")
 	if ( R_DEBUG_rmincIO ) {
 	  cat(sprintf("voxel coordinates returned by .Call ...\n"))
 	  print(output)
