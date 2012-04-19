@@ -36,7 +36,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("read_voxel_from_files: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("read_voxel_from_files: start ...\n");
 
 
 	// init
@@ -61,7 +61,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 
 	// allocate the hyper-slab output buffer to the heap (big enough to handle ONE hyper-slab)
 	hSlab_buffer_size =  no_cols;
-	if ( R_DEBUG_rminc2 ) Rprintf("Allocating hyperslab buffer using R_alloc.  Size is %d doubles\n", hSlab_buffer_size);
+	if ( R_DEBUG_rmincIO ) Rprintf("Allocating hyperslab buffer using R_alloc.  Size is %d doubles\n", hSlab_buffer_size);
 	hSlab_buffer = (double *) R_alloc(hSlab_buffer_size, sizeof(double));
 	if ( hSlab_buffer == NULL) {
 		error("Error allocating hyperslab buffer.  Size: %d doubles.\n", hSlab_buffer_size);
@@ -85,7 +85,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 			error("Error returned from miget_volume_dimension_count.\n");
 		}
 		/* ... now set the order */
-		if ( R_DEBUG_rminc2 ) Rprintf("read_voxel_from_files: Setting the apparent order for %d dimensions ... ", n_dimensions);
+		if ( R_DEBUG_rmincIO ) Rprintf("read_voxel_from_files: Setting the apparent order for %d dimensions ... ", n_dimensions);
 		if ( n_dimensions == 3 ) {
 			result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 		} else if ( n_dimensions == 4 ) {
@@ -97,7 +97,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 		if ( result != MI_NOERROR ) { 
 			error("Error returned from miset_apparent_dimension_order_by_name while setting apparent order for %d dimensions.\n", n_dimensions); 
 		}
-		if ( R_DEBUG_rminc2 ) Rprintf("Done.\n");
+		if ( R_DEBUG_rmincIO ) Rprintf("Done.\n");
 
 
 
@@ -106,7 +106,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 			// read a hyperslab across all frames (i.e. over time)
 			hSlab_count[0] = no_frames;
 			hSlab_count[1] = hSlab_count[2] = hSlab_count[3] = 1;
-			if ( R_DEBUG_rminc2 ) Rprintf("hSlab_count [0..3] = %d, %d, %d, %d\n", 
+			if ( R_DEBUG_rmincIO ) Rprintf("hSlab_count [0..3] = %d, %d, %d, %d\n", 
 							hSlab_count[0], hSlab_count[1], hSlab_count[2], hSlab_count[3]);
 			
 			result = miget_real_value_hyperslab(minc_volume, MI_TYPE_DOUBLE, 
@@ -128,7 +128,7 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 		} else {
 			//
 			// no frames (i.e. a 3-d volume)
-			if ( R_DEBUG_rminc2 ) Rprintf("Debug: About to read value in 3-D volume\n");
+			if ( R_DEBUG_rmincIO ) Rprintf("Debug: About to read value in 3-D volume\n");
 			result = miget_real_value(minc_volume, &hSlab_start[1], 3, hSlab_buffer);
 			if ( result != MI_NOERROR ) {
 				error("Error in miget_real_value.  File: %s.\n", CHAR(STRING_ELT(filenames, i)));
@@ -143,12 +143,12 @@ SEXP read_voxel_from_files(SEXP filenames,  SEXP voxCoords,  SEXP noFiles,  SEXP
 
 
 	// // allocate the hyper-slab output buffer to the heap  (no need when using R_alloc)
-	// if ( R_DEBUG_rminc2 ) Rprintf("Freeing output buffer on heap.\n");
+	// if ( R_DEBUG_rmincIO ) Rprintf("Freeing output buffer on heap.\n");
 	// free(hSlab_buffer);
 
 	// remove protection and return matrix
 	UNPROTECT(1);
-	if ( R_DEBUG_rminc2 ) Rprintf("read_voxel_from_files: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("read_voxel_from_files: returning ...\n");
 	return(output);
 }
 
@@ -184,7 +184,7 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
    //double         *hSlab_vector_ptr;
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("read_hyperslab: start ...\n");
 
 
 
@@ -210,7 +210,7 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 	}
 
 	/* set the apparent order to something conventional */
-	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: Setting the apparent order for %d dimensions ... \n", no_dimensions);
+	if ( R_DEBUG_rmincIO ) Rprintf("read_hyperslab: Setting the apparent order for %d dimensions ... \n", no_dimensions);
 	if ( no_dimensions == 3 ) {
 		result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 	} else if ( no_dimensions == 4 ) {
@@ -223,16 +223,16 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 	}
 
 	// read the hyperslab
-	if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: hSlab_start = %d %d %d\n", hSlab_start[0], hSlab_start[1], hSlab_start[2]);
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: hSlab_count = %d %d %d\n", hSlab_count[0], hSlab_count[1], hSlab_count[2]);
+	if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: hSlab_start = %d %d %d\n", hSlab_start[0], hSlab_start[1], hSlab_start[2]);
+   if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: hSlab_count = %d %d %d\n", hSlab_count[0], hSlab_count[1], hSlab_count[2]);
 
 
    // this is for fun and Debug confirmation
    result = miget_hyperslab_size(MI_TYPE_DOUBLE, no_dimensions, hSlab_count, &hSlab_size);
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: hSlab_size in bytes = %d\n", hSlab_size);
+   if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: hSlab_size in bytes = %d\n", hSlab_size);
 
    
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: Attempting a calloc of %d bytes\n", hSlab_num_entries * sizeof (double));
+   if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: Attempting a calloc of %d bytes\n", hSlab_num_entries * sizeof (double));
    //hSlab_read_buffer = (double *) R_alloc(hSlab_num_entries, sizeof (double));
    hSlab_read_buffer = calloc(hSlab_num_entries, sizeof (double));
    if ( hSlab_read_buffer == NULL ) {
@@ -247,17 +247,17 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
 	if ( result != MI_NOERROR ) {
 		error("Error in miget_real_value_hyperslab: %s.\n", CHAR(STRING_ELT(filename, 0)));
 	}
-   //if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: NOT CALLING miget_real_value_hyperslab\n");
+   //if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: NOT CALLING miget_real_value_hyperslab\n");
 	
 
    // move slice data from buffer into vector SEXP
    //
 	// allocate receiving matrix (3-D volumes always only return 1 column)
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: allocVector: size is %d doubles\n", hSlab_num_entries);
+   if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: allocVector: size is %d doubles\n", hSlab_num_entries);
    PROTECT(hSlab_vector=allocVector(REALSXP, hSlab_num_entries));
 
    // copy data
-   if ( R_DEBUG_rminc2 ) Rprintf("DEBUG: read_hyperslab: copy %d double entries from read_buffer to hSlab_vector\n", hSlab_num_entries);
+   if ( R_DEBUG_rmincIO ) Rprintf("DEBUG: read_hyperslab: copy %d double entries from read_buffer to hSlab_vector\n", hSlab_num_entries);
    for (ndx=0; ndx< hSlab_num_entries;ndx++) {
       REAL(hSlab_vector)[ndx] = hSlab_read_buffer[ndx];
    }
@@ -267,7 +267,7 @@ SEXP read_hyperslab(SEXP filename,  SEXP start,  SEXP count, SEXP nDimensions) {
    free(hSlab_read_buffer);
    hSlab_read_buffer = NULL;
 	UNPROTECT(1);
-	if ( R_DEBUG_rminc2 ) Rprintf("read_hyperslab: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("read_hyperslab: returning ...\n");
    R_CheckStack();
    //Rf_R_CheckStack();
 	return(hSlab_vector);

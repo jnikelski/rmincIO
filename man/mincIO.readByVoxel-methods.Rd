@@ -57,8 +57,8 @@ in the very bowels of the original \pkg{RMINC} package.
 \dontshow{
 # clear debug flag and get full volume pathname
 # ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rminc2 <- 0
-    volDir <- system.file("packageData/volumes", package="rminc2")
+    R_DEBUG_rmincIO <- 0
+    volDir <- system.file("packageData/volumes", package="rmincIO")
 }
 # read voxel value at center of Anterior Commissure across 5 volumes
 # into a voxel array.  Start with the 3D case.

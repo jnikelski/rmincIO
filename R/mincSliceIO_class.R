@@ -69,7 +69,7 @@ setMethod(
 	signature=signature(mincIOobj="MincSliceIO", propertyId="character"),
 	definition=function(mincIOobj, propertyId) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSliceIO::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSliceIO::mincIO.getProperty() ... \n")
 
 		# does the property exist in the MincSliceIO object?
 		propertyHit <- FALSE
@@ -95,7 +95,7 @@ setMethod(
 			value <- NULL
 		}
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincSliceIO::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSliceIO::mincIO.getProperty() ... \n")
 
 		# return
 		return(value)
@@ -111,7 +111,7 @@ setMethod(
 	signature=signature(mincIOobj="MincSliceIO", propertyId="character"),
 	definition=function(mincIOobj, propertyId, value) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSliceIO::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSliceIO::mincIO.setProperty() ... \n")
 
 
 		# get the variable name for the passed MincSliceIO object
@@ -164,14 +164,14 @@ setMethod(
 
 
 		# assign newly updated object to parent frame and then return nothing
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("MincSliceIO::mincIO.setProperty(). Old property: %s\n", as.character(prevValue)))
 			cat(sprintf("MincSliceIO::mincIO.setProperty(). New property: %s\n", as.character(value)))
 			cat(sprintf("MincSliceIO::mincIO.setProperty(). Updating object: %s\n", as.character(objName)))
 		}
 		#
 		assign(objName, mincIOobj, envir=parent.frame())
-		if ( R_DEBUG_rminc2 ) cat("<< MincSliceIO::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSliceIO::mincIO.setProperty() ... \n")
 		return(invisible())
 	}
 )
@@ -196,10 +196,10 @@ setMethod(
 	signature=signature(x="MincSliceIO"),
 	definition=function(x, ...) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSliceIO::print() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSliceIO::print() ... \n")
 
 		# assume a MincInfo object has been passed
-		if ( R_DEBUG_rminc2 ) cat("MincSliceIO::print() >> printMincInfo ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSliceIO::print() >> printMincInfo ... \n")
 		mincIO.printMincInfo(x@mincInfo)
 
 		# display a little something about the volume data itself
@@ -221,7 +221,7 @@ setMethod(
 		cat(sprintf("Volume type: %s\n", x@volumeType))
 		cat(sprintf("Colormap used for display: %s\n\n", x@colorMap))
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincSliceIO::print() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSliceIO::print() ... \n")
 
 	}
 )
@@ -234,10 +234,10 @@ setMethod(
 	signature=signature(object="MincSliceIO"),
 	definition=function(object) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSliceIO::show() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSliceIO::show() ... \n")
 
 		# assume a MincInfo object has been passed
-		if ( R_DEBUG_rminc2 ) cat("MincSliceIO::show() >> printMincInfo ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSliceIO::show() >> printMincInfo ... \n")
 		mincIO.printMincInfo(object@mincInfo)
 
 		# display a little something about the volume data itself
@@ -259,7 +259,7 @@ setMethod(
 		cat(sprintf("Volume type: %s\n", object@volumeType))
 		cat(sprintf("Colormap used for display: %s\n\n", object@colorMap))
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincSliceIO::show() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSliceIO::show() ... \n")
 	
 	}
 )
@@ -295,13 +295,13 @@ setMethod(
 	signature=signature(filenames="character", sliceNumber="numeric"),
 	definition=function(filenames, sliceNumber, ..., volumeType, colorMap) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> mincIO.readBySlice() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> mincIO.readBySlice() ... \n")
 
 		# figure out whether we have a 3D or 4D volume
-		if ( !rminc2.isMinc(filenames[1]) ) {
+		if ( !rmincUtil.isMinc(filenames[1]) ) {
 			stop(sprintf("Specified filename [%s] either does not exist or is not minc"))
 		}
-		filename <- rminc2.asMinc2(filenames[1])
+		filename <- rmincUtil.asMinc2(filenames[1])
 		mincInfo <- mincIO.readMincInfo(filename[1])
 
 		# set the display properties to useful defaults (if unset)
@@ -342,7 +342,7 @@ setMethod(
 		               as.character(mincInfo@filename),
 		               as.integer(startIndices),
 		               as.integer(dimSizes),
-		               as.integer(mincInfo@nDimensions), PACKAGE="rminc2")
+		               as.integer(mincInfo@nDimensions), PACKAGE="rmincIO")
 
 			# make into a 2D matrix [x,y]
 			dim(sliceMatrix) <- c(mincInfo@dimInfo$sizes[xDim] * mincInfo@dimInfo$sizes[yDim], mincInfo@dimInfo$sizes[tDim])
@@ -362,7 +362,7 @@ setMethod(
 
 		# case (2) -- read a specific slice from a series of 3D volumes
 		if ( mincInfo@nDimensions == 3 ) {
-         if ( R_DEBUG_rminc2 ) cat("Looks like we have a 3D volume ... \n")
+         if ( R_DEBUG_rmincIO ) cat("Looks like we have a 3D volume ... \n")
 
 			# set some useful variables (instead of hard-coding in the function body)
 			zDim <- 1
@@ -372,18 +372,18 @@ setMethod(
 			# validate files and convert to minc2 (if necessary)
 			nVolumes <- length(filenames)
 			for ( ndx in 1:nVolumes ) {
-				if ( !rminc2.isMinc(filenames[ndx] ) ) {
+				if ( !rmincUtil.isMinc(filenames[ndx] ) ) {
 					stop(sprintf("Specified filename [%s] either does not exist or is not minc"))
 				}
-				filenames[ndx] <- rminc2.asMinc2(filenames[ndx])
+				filenames[ndx] <- rmincUtil.asMinc2(filenames[ndx])
 			}
 			
 			# Initialize the MincInfo object for the first volume 
 			# ... yes, we are going to assume that Mr. User is smart enough not to feed
 			# ... us volumes with different sampling
-			if ( R_DEBUG_rminc2 ) cat(sprintf("About to read %s\n", filenames[1]))
+			if ( R_DEBUG_rmincIO ) cat(sprintf("About to read %s\n", filenames[1]))
 			mincInfo <- mincIO.readMincInfo(filenames[1])
-			if ( R_DEBUG_rminc2 ) cat(sprintf("Reading complete\n"))
+			if ( R_DEBUG_rmincIO ) cat(sprintf("Reading complete\n"))
 			
 			# don't allow reading anything other than a 3D volume
 			if ( mincInfo@nDimensions != 3) {
@@ -398,7 +398,7 @@ setMethod(
 
 			# create an empty MincSliceIO object and set assorted fields
 			sliceLength <- mincInfo@dimInfo$sizes[xDim] * mincInfo@dimInfo$sizes[yDim]
-         if ( R_DEBUG_rminc2 ) cat(sprintf("Creating MincSliceIO object: %d rows and %d columns\n",sliceLength, nVolumes))
+         if ( R_DEBUG_rmincIO ) cat(sprintf("Creating MincSliceIO object: %d rows and %d columns\n",sliceLength, nVolumes))
 			mincSlice <- new("MincSliceIO",
 			 					matrix(rep(0, sliceLength*nVolumes), ncol=nVolumes),
 								mincInfo=mincInfo, 
@@ -418,7 +418,7 @@ setMethod(
 
 			# loop over all volumes and read the slice
 			for ( ndx in 1:length(filenames) ) {
-				if ( R_DEBUG_rminc2 ) cat(sprintf("calling read_hyperslab and setting slice array column %d from volume %s\n", ndx, filenames[ndx]))
+				if ( R_DEBUG_rmincIO ) cat(sprintf("calling read_hyperslab and setting slice array column %d from volume %s\n", ndx, filenames[ndx]))
             print(filenames[ndx])
             print(startIndices)
             print(dimSizes)
@@ -427,13 +427,13 @@ setMethod(
 										as.character(filenames[ndx]),
 										as.integer(startIndices),
 										as.integer(dimSizes),
-										as.integer(mincInfo@nDimensions), PACKAGE="rminc2")
+										as.integer(mincInfo@nDimensions), PACKAGE="rmincIO")
             #mincSlice[,ndx] <- rep(0,sliceLength)
 			}
 		}
 
 		# return the slice object
-		if ( R_DEBUG_rminc2 ) cat("<< mincIO.readBySlice() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< mincIO.readBySlice() ... \n")
 		return(mincSlice)
 
 	}
@@ -463,7 +463,7 @@ setMethod(
 	definition=function(mincSliceMatrix, sliceIndex) {
 		#
 		# OK, create a new slice object and init it
-		if ( R_DEBUG_rminc2 ) cat("MincSliceIO method: getting slice/frame from minc Slice Matrix ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSliceIO method: getting slice/frame from minc Slice Matrix ... \n")
 
 		# set some useful variables (instead of hard-coding in the function body)
 		offset <- mincSliceMatrix@mincInfo@nDimensions -3
@@ -475,21 +475,21 @@ setMethod(
 		xSize <- mincSliceMatrix@mincInfo@dimInfo$sizes[xDim] * mincSliceMatrix@mincInfo@dimInfo$steps[xDim]
 		ySize <- mincSliceMatrix@mincInfo@dimInfo$sizes[yDim] * mincSliceMatrix@mincInfo@dimInfo$steps[yDim]
 		aspectRatio <- ySize / xSize
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("x-axis length: %d  step: %f   Total width: %f\n", 
 									mincSliceMatrix@mincInfo@dimInfo$sizes[xDim],
 									mincSliceMatrix@mincInfo@dimInfo$steps[xDim],
 									xSize))
 		}
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("y-axis length: %d  step: %f   Total width: %f\n", 
 									mincSliceMatrix@mincInfo@dimInfo$sizes[yDim],
 									mincSliceMatrix@mincInfo@dimInfo$steps[yDim],
 									ySize))
 		}
-		if ( R_DEBUG_rminc2 ) cat(paste("... axial aspect ratio is ", aspectRatio, "\n"))
-		if ( R_DEBUG_rminc2 ) cat(paste("... nrow:", mincSliceMatrix@mincInfo@dimInfo$sizes[yDim], "\n"))
-		if ( R_DEBUG_rminc2 ) cat(paste("... ncol:", mincSliceMatrix@mincInfo@dimInfo$sizes[xDim], "\n"))
+		if ( R_DEBUG_rmincIO ) cat(paste("... axial aspect ratio is ", aspectRatio, "\n"))
+		if ( R_DEBUG_rmincIO ) cat(paste("... nrow:", mincSliceMatrix@mincInfo@dimInfo$sizes[yDim], "\n"))
+		if ( R_DEBUG_rmincIO ) cat(paste("... ncol:", mincSliceMatrix@mincInfo@dimInfo$sizes[xDim], "\n"))
 
 		# create the MincSlice object and set fields
 		mincSlice <- new("MincSlice", 

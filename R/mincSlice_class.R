@@ -57,7 +57,7 @@ setMethod(
 	signature=signature(mincIOobj="MincSlice", propertyId="character"),
 	definition=function(mincIOobj, propertyId) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSlice::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSlice::mincIO.getProperty() ... \n")
 
 		# does the property exist in the MincVolumeIO object?
 		propertyHit <- FALSE
@@ -83,7 +83,7 @@ setMethod(
 			value <- NULL
 		}
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincSlice::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSlice::mincIO.getProperty() ... \n")
 
 		# return
 		return(value)
@@ -99,7 +99,7 @@ setMethod(
 	signature=signature(mincIOobj="MincSlice", propertyId="character"),
 	definition=function(mincIOobj, propertyId, value) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincSlice::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincSlice::mincIO.setProperty() ... \n")
 
 
 		# get the variable name for the passed MincSlice object
@@ -154,14 +154,14 @@ setMethod(
 
 
 		# assign newly updated object to parent frame and then return nothing
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("MincSlice::mincIO.setProperty(). Old property: %s\n", as.character(prevValue)))
 			cat(sprintf("MincSlice::mincIO.setProperty(). New property: %s\n", as.character(value)))
 			cat(sprintf("MincSlice::mincIO.setProperty(). Updating object: %s\n", as.character(objName)))
 		}
 		#
 		assign(objName, mincIOobj, envir=parent.frame())
-		if ( R_DEBUG_rminc2 ) cat("<< MincSlice::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincSlice::mincIO.setProperty() ... \n")
 		return(invisible())
 	}
 )
@@ -178,7 +178,7 @@ setMethod(
 	"print", 
 	signature=signature(x="MincSlice"),
 	definition=function(x) {
-		if ( R_DEBUG_rminc2 ) cat("MincSlice print() method ...\n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice print() method ...\n")
 		# assume a MincInfo object has been passed
 		mincIO.printMincInfo(x@mincInfo)
 	
@@ -205,7 +205,7 @@ setMethod(
 	"show", 
 	signature=signature(object="MincSlice"),
 	definition=function(object) {
-		if ( R_DEBUG_rminc2 ) cat("MincSlice show() method ...\n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice show() method ...\n")
 		# assume a MincInfo object has been passed
 		mincIO.printMincInfo(object@mincInfo)
 	
@@ -235,7 +235,7 @@ setMethod(
 	signature=signature(x="MincSlice", y="ANY"),
 	definition=function(x, y, ...) {
 
-		if ( R_DEBUG_rminc2 ) cat("MincSlice plot() method ...\n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice plot() method ...\n")
 		Zdim <- 1
 		Ydim <- 2
 		Xdim <- 3
@@ -285,7 +285,7 @@ mincIO.plotSlicePretty <- function(slice, xAxisLabel, yAxisLabel, aspectRatio, c
 	# =============================================================================
 	# 
 
-	if ( R_DEBUG_rminc2 ) cat(">> mincIO.plotSlicePretty ... \n")
+	if ( R_DEBUG_rmincIO ) cat(">> mincIO.plotSlicePretty ... \n")
 
 	# init the colormap to use for display
 	# ... first ensure that a valid colormap was specified
@@ -330,7 +330,7 @@ mincIO.plotSlicePretty <- function(slice, xAxisLabel, yAxisLabel, aspectRatio, c
 				}
 			)
 	# done. Send it back.
-	if ( R_DEBUG_rminc2 ) cat("<< mincIO.plotSlicePretty ... \n")
+	if ( R_DEBUG_rmincIO ) cat("<< mincIO.plotSlicePretty ... \n")
 	return(myPlot)
 }
 
@@ -361,7 +361,7 @@ setMethod(
 	definition=function(mincVolume, sliceNo) {
 		#
 		# OK, get the slice
-		if ( R_DEBUG_rminc2 ) cat("MincSlice method: getting X-slice from array ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice method: getting X-slice from array ... \n")
 
 		# set some useful variables
 		Zdim <- 1
@@ -399,7 +399,7 @@ setMethod(
 	definition=function(mincVolume, sliceNo) {
 		#
 		# OK, get the slice
-		if ( R_DEBUG_rminc2 ) cat("MincSlice method: getting Y-slice from array ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice method: getting Y-slice from array ... \n")
 
 		# set some useful variables
 		Zdim <- 1
@@ -437,7 +437,7 @@ setMethod(
 	definition=function(mincVolume, sliceNo) {
 		#
 		# OK, get the slice
-		if ( R_DEBUG_rminc2 ) cat("MincSlice method: getting Z-slice from array ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice method: getting Z-slice from array ... \n")
 
 		# set some useful variables
 		Zdim <- 1
@@ -494,7 +494,7 @@ setMethod(
 	definition=function(mincSlice, mincVolume, sliceNo) {
 		#
 		# Debug ...
-		if ( R_DEBUG_rminc2 ) cat("MincSlice method: writing slice back into volume array ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice method: writing slice back into volume array ... \n")
 		Zdim <- 1
 		Ydim <- 2
 		Xdim <- 3
@@ -542,19 +542,19 @@ setMethod(
 		#
 		# xSpace?
 		if (  mincSlice@orientation == "xSlice" ) {
-			if ( R_DEBUG_rminc2 ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
+			if ( R_DEBUG_rmincIO ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
 			mincVolume[sliceNumber,,] <- getDataPart(mincSlice)
 		}
 		#
 		# ySpace?
 		if (  mincSlice@orientation == "ySlice" ) {
-			if ( R_DEBUG_rminc2 ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
+			if ( R_DEBUG_rmincIO ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
 			mincVolume[,sliceNumber,] <- getDataPart(mincSlice)
 		}
 		#
 		# zSpace?
 		if (  mincSlice@orientation == "zSlice" ) {
-			if ( R_DEBUG_rminc2 ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
+			if ( R_DEBUG_rmincIO ) cat(sprintf("Writing slice %s [%d] back to volume ...\n", mincSlice@orientation, sliceNumber))
 			mincVolume[,,sliceNumber] <- getDataPart(mincSlice)
 		}
 
@@ -586,7 +586,7 @@ setMethod(
 	definition=function(mincVolume, initVector) {
 		#
 		# OK, get the slice
-		if ( R_DEBUG_rminc2 ) cat("MincSlice method: creating a new Z-slice from array ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincSlice method: creating a new Z-slice from array ... \n")
 
 		# create a new empty z-slice (use slice 1 as a template)
 		zSlice <- mincIO.getSliceZ(mincVolume, 1)

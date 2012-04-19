@@ -44,7 +44,7 @@ setMethod(
 	signature=signature(mincIOobj="MincInfo", propertyId="character"),
 	definition=function(mincIOobj, propertyId) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincInfo::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincInfo::mincIO.getProperty() ... \n")
 
 		# does the property exist in the MincInfo object? i.e., valid slot name passed?
 		propertyHit <- FALSE
@@ -73,7 +73,7 @@ setMethod(
 			value <- NULL
 		}
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincInfo::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincInfo::mincIO.getProperty() ... \n")
 
 		# return
 		return(value)
@@ -89,7 +89,7 @@ setMethod(
 	signature=signature(mincIOobj="MincInfo", propertyId="character"),
 	definition=function(mincIOobj, propertyId, value) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincInfo::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincInfo::mincIO.setProperty() ... \n")
 
 
 		# get the variable name for the passed MincInfo object
@@ -132,14 +132,14 @@ setMethod(
 
 
 		# assign newly updated object to parent frame and then return nothing
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("MincInfo::mincIO.setProperty(). Old property: %s\n", as.character(prevValue)))
 			cat(sprintf("MincInfo::mincIO.setProperty(). New property: %s\n", as.character(value)))
 			cat(sprintf("MincInfo::mincIO.setProperty(). Updating object: %s\n", as.character(objName)))
 		}
 		#
 		assign(objName, mincIOobj, envir=parent.frame())
-		if ( R_DEBUG_rminc2 ) cat("<< MincInfo::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincInfo::mincIO.setProperty() ... \n")
 		return(invisible())
 	}
 )
@@ -186,19 +186,19 @@ mincIO.readMincInfo <- function(filename) {
 	# ===================================================
 	#
 
-	if ( R_DEBUG_rminc2 ) cat(">> MincInfo::mincIO.readMincInfo() ... \n")
+	if ( R_DEBUG_rmincIO ) cat(">> MincInfo::mincIO.readMincInfo() ... \n")
 
 	# make sure that any shell wild characters are expanded
 	filename <- path.expand(filename)
 
 	# let's make sure that we have a minc2 volume (else convert)
-	filename <- rminc2.asMinc2(filename)
+	filename <- rmincUtil.asMinc2(filename)
 
 	#cat("MincInfo::readMincInfo(). About to enter the C code\n")
-	if ( R_DEBUG_rminc2 ) cat("MincInfo::mincIO.readMincInfo(). Entering C code\n")
+	if ( R_DEBUG_rmincIO ) cat("MincInfo::mincIO.readMincInfo(). Entering C code\n")
 	volInfo <- .Call("get_volume_info",
-              as.character(filename),PACKAGE="rminc2")
-	if ( R_DEBUG_rminc2 ) cat("MincInfo::mincIO.readMincInfo(). Returning from C code\n")
+              as.character(filename),PACKAGE="rmincIO")
+	if ( R_DEBUG_rmincIO ) cat("MincInfo::mincIO.readMincInfo(). Returning from C code\n")
 	# print(volInfo)
 	# str(volInfo)
 
@@ -261,7 +261,7 @@ mincIO.readMincInfo <- function(filename) {
 	mincInfo@filename <- filename
 
 	#
-	if ( R_DEBUG_rminc2 ) cat("<< MincInfo::mincIO.readMincInfo() ... \n")
+	if ( R_DEBUG_rmincIO ) cat("<< MincInfo::mincIO.readMincInfo() ... \n")
 	return(mincInfo)
 }
 
@@ -281,8 +281,8 @@ mincIO.printMincInfo <- function(mincInfo) {
 	#
 
 	# get the valid minc2 data types and classes
-	dataClass.df <- rminc2.getDataClasses()
-	dataType.df <- rminc2.getDataTypes()
+	dataClass.df <- rmincUtil.getDataClasses()
+	dataType.df <- rmincUtil.getDataTypes()
 
 	# great. Now print it real pretty like
 	cat("\n---- Volume Specific Information ----\n")

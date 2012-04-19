@@ -38,7 +38,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("write_volume: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("write_volume: start ...\n");
 
 	/* init number of dimensions and their respective sizes
 	  ... yes, I could get this myself, but it's best set in the calling R code */
@@ -153,7 +153,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 
 	// write  hyperslab (entire volume)
 	hSlab_start[0] = hSlab_start[1] = hSlab_start[2] = 0;
-	if ( R_DEBUG_rminc2 ) Rprintf("hSlab_count [0..2] = %d, %d, %d\n", 
+	if ( R_DEBUG_rmincIO ) Rprintf("hSlab_count [0..2] = %d, %d, %d\n", 
 		hSlab_count[0], hSlab_count[1], hSlab_count[2]);
 			
 	result = miset_real_value_hyperslab(minc_volume, MI_TYPE_DOUBLE, 
@@ -179,7 +179,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 	}
 
 	// done, return NULL
-	if ( R_DEBUG_rminc2 ) Rprintf("write_volume: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("write_volume: returning ...\n");
 	return(R_NilValue);
 }
 

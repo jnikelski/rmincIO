@@ -40,7 +40,7 @@ is to read the contents of these files and return the most significant values in
 
 \examples{
 \dontrun{
-library(rminc2)
+library(rmincIO)
 
 # set Civet root path and scan-identifier
 basePath <- "~/tmp/ADNI/civet/pipeOut"

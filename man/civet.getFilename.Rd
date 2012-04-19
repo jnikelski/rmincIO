@@ -71,7 +71,7 @@ Tab-Completion mechanism.  Thus, for example, using the OS X built-in GUI (R.app
 
 \examples{
 \dontrun{
-library(rminc2)
+library(rmincIO)
 
 # set Civet root path and scan-identifier
 basePath <- "~/tmp/ADNI/civet/pipeOut"

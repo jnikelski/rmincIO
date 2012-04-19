@@ -30,7 +30,7 @@ volume.explodeLabelVolume(label_vol, labels=null, civetLabels=TRUE)
 
 \examples{
 \dontrun{
-library(rminc2)
+library(rmincIO)
 
 # set Civet root path and scan-identifier
 scanID <- "0548-F-NC"

@@ -43,8 +43,8 @@
 \dontshow{
 # clear debug flag and get full volume pathname
 # ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rminc2 <- 0      
-    volDir <- system.file("packageData/volumes", package="rminc2")
+    R_DEBUG_rmincIO <- 0      
+    volDir <- system.file("packageData/volumes", package="rmincIO")
 }
 # load the ICBM-152 volume
 vIcbm <- "icbm_avg_152_t1_tal_lin.mnc"

@@ -1,8 +1,8 @@
-Package: rminc2
-Version: 0.5
-Date: 2011-03-20
+Package: rmincIO
+Version: 1.0
+Date: 2012-04-18
 Title: Package for reading and analyzing MINC2 files
-Author: Jim Nikelski <nikelski@bic.mni.mcgill.ca>, Jason Lerch <jason@phenogenomics.ca>
+Author: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Maintainer: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Description: A package for reading and writing MINC2 files 
 	and running arbitrary R functions at every voxel of a set of files.
@@ -11,8 +11,8 @@ Suggests: nlme, qvalue
 License: BSD
 Collate: AllGeneric.R
          mincInfo_class.R mincVolumeIO_class.R mincSlice_class.R
-         mincSliceIO_class.R mincVoxelIO_class.R minc_support.R
-         minc_interface.R civet.R fast_qvalue.R rmincLmeLoop.R
+         mincSliceIO_class.R mincVoxelIO_class.R
+         civet.R 
          volumetric.R zzz.R
 LazyLoad: yes
 OS_type: unix

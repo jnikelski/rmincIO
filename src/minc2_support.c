@@ -40,7 +40,7 @@ SEXP get_volume_info(SEXP filename) {
 
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("get_volume_info: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("get_volume_info: start ...\n");
 
 
 	/* do some initialization */
@@ -81,7 +81,7 @@ SEXP get_volume_info(SEXP filename) {
 		error("Error returned from miget_volume_dimension_count.\n");
 	}
 	// ... now set the order
-	if ( R_DEBUG_rminc2 ) Rprintf("Setting the apparent order for %d dimensions ... ", n_dimensions);
+	if ( R_DEBUG_rmincIO ) Rprintf("Setting the apparent order for %d dimensions ... ", n_dimensions);
 	if ( n_dimensions == 3 ) {
 		result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 	} else if ( n_dimensions == 4 ) {
@@ -92,7 +92,7 @@ SEXP get_volume_info(SEXP filename) {
 	if ( result != MI_NOERROR ) { 
 		error("Error returned from miset_apparent_dimension_order_by_name while setting apparent order for %d dimensions.\n", n_dimensions); 
 	}
-	if ( R_DEBUG_rminc2 ) Rprintf("Done.\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("Done.\n");
 
 	/* get the volume data class (the intended "real" values) */ 
 	if ( miget_data_class(minc_volume, &volume_class) != MI_NOERROR ){
@@ -235,7 +235,7 @@ SEXP get_volume_info(SEXP filename) {
 		/* add to R vector ... */
 		for (i=0; i < n_frames; ++i) {
 			REAL(xTimeOffsets)[i] = time_offsets[i];
-//			if (R_DEBUG_rminc2) Rprintf("Time offset[%d] =  %g\n", i, time_offsets[i]);
+//			if (R_DEBUG_rmincIO) Rprintf("Time offset[%d] =  %g\n", i, time_offsets[i]);
 		}
 		list_index++;
 		SET_VECTOR_ELT(rtnList, list_index, xTimeOffsets);
@@ -250,7 +250,7 @@ SEXP get_volume_info(SEXP filename) {
 		/* add to R vector ... */
 		for (i=0; i<n_frames; ++i) {
 			REAL(xTimeWidths)[i] = time_widths[i];
-//			if (R_DEBUG_rminc2) Rprintf("Time width[%d] =  %g\n", i, time_widths[i]);
+//			if (R_DEBUG_rmincIO) Rprintf("Time width[%d] =  %g\n", i, time_widths[i]);
 		}
 		list_index++;
 		SET_VECTOR_ELT(rtnList, list_index, xTimeWidths);
@@ -275,7 +275,7 @@ SEXP get_volume_info(SEXP filename) {
 	UNPROTECT(n_protects);
 
    /* return */
-	if ( R_DEBUG_rminc2 ) Rprintf("get_volume_info: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("get_volume_info: returning ...\n");
    return(rtnList);
 }
 
@@ -306,7 +306,7 @@ SEXP convert_voxel_to_world_mincIO(SEXP filename, SEXP voxCoords) {
 	SEXP		output;
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_voxel_to_world: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_voxel_to_world: start ...\n");
 
 
 
@@ -323,7 +323,7 @@ SEXP convert_voxel_to_world_mincIO(SEXP filename, SEXP voxCoords) {
 		error("Error returned from miget_volume_dimension_count.\n");
 	}
 	/* ... now set the order */
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_world_to_voxel: Setting the apparent order for %d dimensions ... ", n_dimensions);
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_world_to_voxel: Setting the apparent order for %d dimensions ... ", n_dimensions);
 	if ( n_dimensions == 3 ) {
 		result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 	} else if ( n_dimensions == 4 ) {
@@ -334,7 +334,7 @@ SEXP convert_voxel_to_world_mincIO(SEXP filename, SEXP voxCoords) {
 	if ( result != MI_NOERROR ) { 
 		error("Error returned from miset_apparent_dimension_order_by_name while setting apparent order for %d dimensions.\n", n_dimensions); 
 	}
-	if ( R_DEBUG_rminc2 ) Rprintf("Done.\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("Done.\n");
 
 
 	// init the voxel coordinates buffer
@@ -361,7 +361,7 @@ SEXP convert_voxel_to_world_mincIO(SEXP filename, SEXP voxCoords) {
 
 	// remove protection and return vector
 	UNPROTECT(1);
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_voxel_to_world: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_voxel_to_world: returning ...\n");
 	return(output);
 }
 
@@ -395,7 +395,7 @@ SEXP convert_world_to_voxel_mincIO(SEXP filename, SEXP worldCoords) {
 
 
 	// start ...
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_world_to_voxel: start ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_world_to_voxel: start ...\n");
 
 	// init the world coordinates
 	for ( ndx=0; ndx < MI2_3D; ++ndx ) {
@@ -416,7 +416,7 @@ SEXP convert_world_to_voxel_mincIO(SEXP filename, SEXP worldCoords) {
 		error("Error returned from miget_volume_dimension_count.\n");
 	}
 	/* ... now set the order */
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_world_to_voxel: Setting the apparent order for %d dimensions ... ", n_dimensions);
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_world_to_voxel: Setting the apparent order for %d dimensions ... ", n_dimensions);
 	if ( n_dimensions == 3 ) {
 		result = miset_apparent_dimension_order_by_name(minc_volume, 3, dimorder3d);
 	} else if ( n_dimensions == 4 ) {
@@ -428,7 +428,7 @@ SEXP convert_world_to_voxel_mincIO(SEXP filename, SEXP worldCoords) {
 	if ( result != MI_NOERROR ) { 
 		error("Error returned from miset_apparent_dimension_order_by_name while setting apparent order for %d dimensions.\n", n_dimensions); 
 	}
-	if ( R_DEBUG_rminc2 ) Rprintf("Done.\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("Done.\n");
 
 
 	// do the call
@@ -442,7 +442,7 @@ SEXP convert_world_to_voxel_mincIO(SEXP filename, SEXP worldCoords) {
 
 	// remove protection and return vector
 	UNPROTECT(1);
-	if ( R_DEBUG_rminc2 ) Rprintf("convert_world_to_voxel: returning ...\n");
+	if ( R_DEBUG_rmincIO ) Rprintf("convert_world_to_voxel: returning ...\n");
 	return(output);
 }
 

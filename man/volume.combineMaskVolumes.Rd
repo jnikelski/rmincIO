@@ -28,7 +28,7 @@ volume.combineMaskVolumes(vol_list)
 
 \examples{
 \dontrun{
-library(rminc2)
+library(rmincIO)
 
 # set Civet root path and scan-identifier
 scanID <- "0548-F-NC"

@@ -36,7 +36,7 @@ civet.computeNativeTissueVolumes(scanID, baseDir, civetVersion="1.1.9")
 
 \examples{
 \dontrun{
-library(rminc2)
+library(rmincIO)
 
 # set Civet root path and scan-identifier
 basePath <- "~/tmp/ADNI/civet/pipeOut"

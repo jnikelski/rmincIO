@@ -765,7 +765,7 @@ civet.computeNativeToStxRescalingFactor <- function(scanID, baseDir, civetVersio
 	
 	# read linear xfm file
 	xfmFilename <- civet.getFilenameLinearTransform(scanID, baseDir)
-	xfm.df <- rminc2.readLinearXfmFile(xfmFilename)
+	xfm.df <- rmincUtil.readLinearXfmFile(xfmFilename)
 	
 	# compute global linear scaling factor
 	scaling_factor <- prod(xfm.df["scale",])

@@ -55,8 +55,8 @@
 \dontshow{
 # clear debug flag and get full volume pathname
 # ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rminc2 <- 1      
-    volDir <- system.file("packageData/volumes", package="rminc2")
+    R_DEBUG_rmincIO <- 1      
+    volDir <- system.file("packageData/volumes", package="rmincIO")
 }
 # create from scratch
 vol <- mincIO.makeNewVolume("mymakeNewVolume.mnc", dimLengths=c(128,128,80), 

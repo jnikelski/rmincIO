@@ -48,7 +48,7 @@ setMethod(
 	signature=signature(mincIOobj="MincVoxelIO", propertyId="character"),
 	definition=function(mincIOobj, propertyId) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincVoxelIO::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincVoxelIO::mincIO.getProperty() ... \n")
 
 		# does the property exist in the MincVoxelIO object?
 		propertyHit <- FALSE
@@ -74,7 +74,7 @@ setMethod(
 			value <- NULL
 		}
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincVoxelIO::mincIO.getProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincVoxelIO::mincIO.getProperty() ... \n")
 
 		# return
 		return(value)
@@ -90,7 +90,7 @@ setMethod(
 	signature=signature(mincIOobj="MincVoxelIO", propertyId="character"),
 	definition=function(mincIOobj, propertyId, value) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincVoxelIO::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincVoxelIO::mincIO.setProperty() ... \n")
 
 
 		# get the variable name for the passed MincVoxelIO object
@@ -138,14 +138,14 @@ setMethod(
 
 
 		# assign newly updated object to parent frame and then return nothing
-		if ( R_DEBUG_rminc2 ) {
+		if ( R_DEBUG_rmincIO ) {
 			cat(sprintf("MincVoxelIO::mincIO.setProperty(). Old property: %s\n", as.character(prevValue)))
 			cat(sprintf("MincVoxelIO::mincIO.setProperty(). New property: %s\n", as.character(value)))
 			cat(sprintf("MincVoxelIO::mincIO.setProperty(). Updating object: %s\n", as.character(objName)))
 		}
 		#
 		assign(objName, mincIOobj, envir=parent.frame())
-		if ( R_DEBUG_rminc2 ) cat("<< MincVoxelIO::mincIO.setProperty() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincVoxelIO::mincIO.setProperty() ... \n")
 		return(invisible())
 	}
 )
@@ -166,10 +166,10 @@ setMethod(
 	signature=signature(x="MincVoxelIO"),
 	definition=function(x, ...) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> MincVoxelIO::print() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> MincVoxelIO::print() ... \n")
 
 		# assume a MincInfo object has been passed
-		if ( R_DEBUG_rminc2 ) cat("MincVoxelIO::print() >> mincIO.printMincInfo ... \n")
+		if ( R_DEBUG_rmincIO ) cat("MincVoxelIO::print() >> mincIO.printMincInfo ... \n")
 		mincIO.printMincInfo(x@mincInfo)
 
 		# display a little something about the voxel data itself
@@ -194,7 +194,7 @@ setMethod(
 			}
 		}
 
-		if ( R_DEBUG_rminc2 ) cat("<< MincVoxelIO::print() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< MincVoxelIO::print() ... \n")
 
 	}
 )
@@ -224,24 +224,24 @@ setMethod(
 	signature=signature(filenames="character"),
 	definition=function(filenames, voxelCoords) {
 
-		if ( R_DEBUG_rminc2 ) cat(">> mincIO.readByVoxel() ... \n")
+		if ( R_DEBUG_rmincIO ) cat(">> mincIO.readByVoxel() ... \n")
 
 		# are all of the files readable?
-		if ( !rminc2.isReadable(filenames) ) {
+		if ( !rmincUtil.isReadable(filenames) ) {
 			stop("Unreadable files found.\n")
 		}
 
 		# are all files valid minc2 volumes?
 		checkedFilenames <- filenames
 		for ( ndx in 1:length(filenames) ) {
-			if ( !rminc2.isMinc(filenames[ndx]) ) {
+			if ( !rmincUtil.isMinc(filenames[ndx]) ) {
 				stop(sprintf("Input volume [%s] does not appear to be Minc\n"))
 			}
 			#
 			# if minc1, then we need to convert
 			checkedFilenames[ndx] <- filenames[ndx]
-			if ( !rminc2.isMinc1(filenames[ndx]) ) {
-				checkedFilenames[ndx] <- rminc2.asMinc2(filenames[ndx])
+			if ( !rmincUtil.isMinc1(filenames[ndx]) ) {
+				checkedFilenames[ndx] <- rmincUtil.asMinc2(filenames[ndx])
 			}
 		}
 
@@ -250,7 +250,7 @@ setMethod(
 
 
 		# return the VoxelIO object
-		if ( R_DEBUG_rminc2 ) cat("<< mincIO.readByVoxel() ... \n")
+		if ( R_DEBUG_rmincIO ) cat("<< mincIO.readByVoxel() ... \n")
 		return(voxelMatrix)
 
 	}
@@ -274,7 +274,7 @@ mincIO.readByVoxelX <- function(filenames, voxelCoords) {
 #
 # =============================================================================
 #
-	if ( R_DEBUG_rminc2 ) cat(">> mincIO.readByVoxelX() ... \n")
+	if ( R_DEBUG_rmincIO ) cat(">> mincIO.readByVoxelX() ... \n")
 
 
 	nFrames <- 0
@@ -288,7 +288,7 @@ mincIO.readByVoxelX <- function(filenames, voxelCoords) {
 	# ... get frame count and ensure that all counts are the same
 	for ( ndx in 1:nFiles ) {
 		mincInfo <- mincIO.readMincInfo(filenames[ndx])
-		if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): processing volume %d\n", ndx))
+		if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): processing volume %d\n", ndx))
 
 		# check that all 4D volumes have a consistent time dimension
 		if ( mincInfo@nDimensions > 3 ) {
@@ -318,20 +318,20 @@ mincIO.readByVoxelX <- function(filenames, voxelCoords) {
 			mincInfo@filename,
 			mincInfoV01@filename))
 		}
-		if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): processing volume %d ... complete\n", ndx))
+		if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): processing volume %d ... complete\n", ndx))
 	}
 
 	# validate the coordinates
 	#
 	# 3 coords were passed?
-	if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): at coord validation step\n"))
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): at coord validation step\n"))
 	if ( length(voxelCoords) != 3 ) 
 		stop(sprintf("Coordinate vector must have a length of 3, not %d\n", length(voxelCoords)))
 
 
 	# all coordinates are within range for the first volume?
 	# ... if we have a 4-D volume, skip the first (time) index
-	if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): doing 4D adjustment stuff\n"))
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): doing 4D adjustment stuff\n"))
 	offset <- 0
 	if ( mincInfoV01@nDimensions > 3 )  offset <- offset +1
 	for ( ndx in 1:3 ) {
@@ -345,28 +345,28 @@ mincIO.readByVoxelX <- function(filenames, voxelCoords) {
 
 	
 	# make coords z,y,x order and 0-relative for C-call
-	if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): making coords C-relative\n"))
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): making coords C-relative\n"))
 	adjVoxCoords <- rev(voxelCoords) -1
 	
 	# OK. Now that we passsed validation, let's get the values
-	if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): calling read_voxel_from_files\n"))
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): calling read_voxel_from_files\n"))
 	voxel.mat <- .Call("read_voxel_from_files",
                   as.character(filenames),
                   as.integer(adjVoxCoords),
                   as.integer(nFiles),
-                  as.integer(nFrames), PACKAGE="rminc2")
+                  as.integer(nFrames), PACKAGE="rmincIO")
 
 	# create the MincVoxelIO object and set assorted fields
-	if ( R_DEBUG_rminc2 ) cat(sprintf("Debug mincIO.readByVoxelX(): instantiating object\n"))
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): instantiating object\n"))
 	voxelObj <- new("MincVoxelIO",
 	 					voxel.mat,
 						mincInfo=mincInfo, 
 						voxelCoords=as.integer(voxelCoords),
-						worldCoords=rminc2.convertVoxelToWorld(filenames[1], voxelCoords),
+						worldCoords=rmincUtil.convertVoxelToWorld(filenames[1], voxelCoords),
 						filenames=filenames )
 
 	# DONE. Return the new volume array object.
-	if ( R_DEBUG_rminc2 ) cat("<< mincIO.readByVoxelX() ... \n")
+	if ( R_DEBUG_rmincIO ) cat("<< mincIO.readByVoxelX() ... \n")
 	return(voxelObj)
 	
 

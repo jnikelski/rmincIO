@@ -55,7 +55,7 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 		# determine the list component name
 		label_name <- paste("label", label, sep="_")
 		if ( civetLabels ) { label_name <- tissueTypes[label +1]}
-		if (R_DEBUG_rminc2) cat(sprintf("processing label %s\n", label_name))
+		if (R_DEBUG_rmincIO) cat(sprintf("processing label %s\n", label_name))
 		
 		# compute the mask
 		#cat(sprintf("processing label %s\n", label_name))
