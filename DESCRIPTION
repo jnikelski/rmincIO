@@ -1,6 +1,6 @@
 Package: rmincIO
-Version: 1.1
-Date: 2012-04-18
+Version: 1.2
+Date: 2012-04-22
 Title: Package for reading and analyzing MINC2 files
 Author: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Maintainer: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
