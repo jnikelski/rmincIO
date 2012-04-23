@@ -31,12 +31,7 @@ rmincUtil.isMinc(filename)
 }
 
 \examples{
-\dontshow{
-# clear debug flag and get full volume pathname
-# ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rmincIO <- 0      
-    volDir <- system.file("packageData/volumes", package="rmincIO")
-}
+\dontrun{
 # check for minc
 myFile <- file.path(volDir, "icbm_avg_152_t1_tal_lin.mnc")
 if ( rmincUtil.isMinc(myFile) ) {
@@ -44,5 +39,5 @@ if ( rmincUtil.isMinc(myFile) ) {
     myFileInfo <- mincIO.readMincInfo(myFile)   # read the mincInfo for this volume
     print(myFileInfo)                           # ... and print it
 }
-}
+}}
 

@@ -1,18 +1,19 @@
 Package: rmincIO
-Version: 1.0
+Version: 1.1
 Date: 2012-04-18
 Title: Package for reading and analyzing MINC2 files
 Author: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Maintainer: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Description: A package for reading and writing MINC2 files 
 	and running arbitrary R functions at every voxel of a set of files.
-Depends: R (>= 2.10.0), grDevices, methods, grid, lattice
-Suggests: nlme, qvalue
+Depends: R (>= 2.12.0), grDevices, methods, Rcpp (>= 0.9.10), grid, lattice, rgl
+LinkingTo: Rcpp
+Suggests:
 License: BSD
 Collate: AllGeneric.R rmincUtil.R
          mincInfo_class.R mincVolumeIO_class.R mincSlice_class.R
-         mincSliceIO_class.R mincVoxelIO_class.R
-         civet.R 
+         mincSliceIO_class.R mincVoxelIO_class.R surfaceIO_class.R
+         civet.R rcpp_hello_world.R
          volumetric.R zzz.R
 LazyLoad: yes
 OS_type: unix

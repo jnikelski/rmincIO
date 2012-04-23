@@ -32,16 +32,12 @@ rmincUtil.isMinc1(filename)
 }
 
 \examples{
-\dontshow{
-# clear debug flag and get full volume pathname
-# ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rmincIO <- 0      
-    volDir <- system.file("packageData/volumes", package="rmincIO")
-}
+\dontrun{
 # check for minc1, convert if necessary
 myFile <- file.path(volDir, "average305_PET_t1_tal_lin.mnc")
 if ( rmincUtil.isMinc1(myFile) ) {
     myFile <- rmincUtil.asMinc2(myFile)
 }
-}
+}}
+
 

@@ -1,2 +1,5 @@
+## Use the R_HOME indirection to support installations of multiple R version
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+#
 PKG_CPPFLAGS = -I/usr/local/bic/current/include -Wall
-PKG_LIBS = -L/usr/local/bic/current/lib -lminc2 -lhdf5 -lz -lnetcdf -lm 
+PKG_LIBS = -L/usr/local/bic/current/lib -lminc2 -lhdf5 -lz -lnetcdf -lm `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`

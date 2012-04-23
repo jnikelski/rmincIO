@@ -278,6 +278,117 @@ rmincUtil.readLinearXfmFile <- function(xfmFilename) {
 }
 
 
+rmincUtil.isMniObj <- function(filename) {
+   # =============================================================================
+   # Purpose: Test to see whether a given file is a polygon MNI object file.
+   #
+   # Details:
+   #
+   # Note: Nothing of note, really.
+   #
+   # =============================================================================
+   #
+   rValue <- FALSE
+   if ( !file.exists(filename) ) { return(rValue) }
+   if ( rmincUtil.isMniObjBinary(filename) ) rValue <- TRUE
+   if ( rmincUtil.isMniObjAscii(filename) ) rValue <- TRUE
+   #
+   return(rValue)
+}
+
+
+rmincUtil.isMniObjBinary <- function(filename) {
+   # =============================================================================
+   # Purpose: Is this a BINARY polygon file?
+   #
+   # Details:
+   #
+   # Note: Nothing of note, really.
+   #
+   # =============================================================================
+   #
+   rValue <- FALSE
+
+   # extract the first character and check type code
+   typeCode <- readChar(filename, 1, useBytes=TRUE)
+   if ( typeCode == "p" ) rValue <- TRUE
+
+   return(rValue)
+}
+
+
+rmincUtil.isMniObjAscii <- function(filename) {
+   # =============================================================================
+   # Purpose: Is this an ASCII polygon file?
+   #
+   # Details:
+   #
+   # Note: Nothing of note, really.
+   #
+   # =============================================================================
+   #
+   rValue <- FALSE
+   # extract the first character and check type code
+   typeCode <- readChar(filename, 1, useBytes=TRUE)
+   if ( typeCode == "P" ) rValue <- TRUE
+
+   return(rValue)
+}
+
+
+rmincUtil.asMniObjAscii <- function(filename, keepName=TRUE) {
+   # =============================================================================
+   # Purpose: Convert MNI object: binary -> Ascii
+   #
+   # Details:
+   #
+   # Note: Ummmm, the code is good (I believe) but not very useful.  Initial testing
+   #        found errors returned from "ascii_binary" due to endian issues. So,
+   #        unless you are absolutely certain that the binary file's endianness matches
+   #        your current system, do not use this function.
+   #
+   # =============================================================================
+   #
+   #
+   # is it already Ascii? Just return the input filename.
+   if ( rmincUtil.isMniObjAscii(filename) ) return(filename)
+   
+   # if it isn't binary, tell 'em and run away
+   cat(paste(">> auto-converting", filename, "to ASCII format ... \n"))
+   if ( !rmincUtil.isMniObj(filename) ) {
+      stop(paste("Trying to convert a file that is not an MNI object file (", filename, ")", sep=""))
+   }
+
+   # before we do anything, make sure that the conversion program is on the user's PATH
+   program <- "ascii_binary"
+   progOptions <- ""
+   test_string <- "Usage:"
+   status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions)
+   if ( !status ) {
+      stop("Program ascii_binary of package bicpl cannot be found on PATH")
+   }
+
+   # fine. So we now have a binary .obj file that we're gonna convert to Ascii
+   #
+   # first, get a temporary filename
+   if ( keepName ) {
+      # we want to use the input filename, but put the file in tmpdir
+      # ... allow for overwrite of file in tmpdir
+      tmpFile <- basename(filename)
+      tmpFile <- file.path(tempdir(), tmpFile)
+   }
+   else {
+      tmpFile <- tempfile( pattern="R_surfaceIO_asciiBinary_")
+   }
+
+   # do the conversion
+   sysCmd <- paste("ascii_binary", filename, tmpFile, "ascii")
+   print(sysCmd)
+   system(sysCmd, wait=TRUE)
+   #
+   return(tmpFile)
+}
+
 
 
 

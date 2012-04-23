@@ -33,12 +33,7 @@
 }
 
 \examples{
-\dontshow{
-# clear debug flag and get full volume pathname
-# ... dunno why zzz.R debug setting is not passed
-    R_DEBUG_rmincIO <- 0      
-    volDir <- system.file("packageData/volumes", package="rmincIO")
-}
+\dontrun{
 # set the xyz voxel coordinates
 xyzCoords <- c(0, 0, 0)
 
@@ -49,7 +44,8 @@ print(v305PET)
 # convert and show it
 ijkCoords <- rmincUtil.convertWorldToVoxel(v305PET, xyzCoords)
 print(ijkCoords)
-}
+}}
+
 
 
 

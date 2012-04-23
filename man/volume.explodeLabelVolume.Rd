@@ -11,7 +11,7 @@
 }
 
 \usage{
-volume.explodeLabelVolume(label_vol, labels=null, civetLabels=TRUE)
+volume.explodeLabelVolume(label_vol, labels=NULL, civetLabels=TRUE)
 
 }
 

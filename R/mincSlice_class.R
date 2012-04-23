@@ -287,6 +287,13 @@ mincIO.plotSlicePretty <- function(slice, xAxisLabel, yAxisLabel, aspectRatio, c
 
 	if ( R_DEBUG_rmincIO ) cat(">> mincIO.plotSlicePretty ... \n")
 
+   if ( R_DEBUG_rmincIO ) {
+      cat(sprintf("mincIO.plotSlicePretty: xAxisLabel: %s\n", xAxisLabel))
+      cat(sprintf("mincIO.plotSlicePretty: yAxisLabel: %s\n", yAxisLabel))
+      cat(sprintf("mincIO.plotSlicePretty: aspectRatio: %f\n", aspectRatio))
+      cat(sprintf("mincIO.plotSlicePretty: colorMap: %s\n", colorMap))
+   }
+
 	# init the colormap to use for display
 	# ... first ensure that a valid colormap was specified
 	clrmaps <- c("gray", "rainbow", "heat.colors", "terrain.colors", "topo.colors", "cm.colors")
