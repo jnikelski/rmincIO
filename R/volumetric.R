@@ -23,21 +23,6 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 	# list the tissue types in Civet order, to be used in naming the
 	# components of the returned list
 	tissueTypes <- c("bg", "csf", "gm", "wm")
-	
-	# read the label volume
-	# label_vol <- mincIO.readVolume(labelVolname, volumeType="label")
-
-	# here we have a choice: We either specify which labels we want exploded out,
-	# or, we don't, and we get all of them
-	#
-	if ( is.null(labels)) {
-		# not specified, so get the set of unique labels
-		labels <- unique(label_vol)
-	} else {
-		# specified, ... make sure we've been passed a numeric vector
-		if ( !is.vector(labels, mode="numeric")) {stop("Label vector must be a numeric vector")}
-		
-	}
 
    # convert label volume to integer-ish values so that we can do
    # tests of equivalence against integer label values
@@ -47,6 +32,21 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
    # (2) often the float values are *slightly* different from integers
    # (3) when R tests for equivalence, it's *very* picky ...
    label_vol_discrete <- round(label_vol)
+
+
+	# here we have a choice: We either specify which labels we want exploded out,
+	# or, we don't, and we get all of them
+	#
+	if ( is.null(labels)) {
+		# not specified, so get the set of unique labels
+      # note: labels are not returned in any particular order
+		labels <- unique(as.vector(label_vol_discrete))
+	} else {
+		# specified, ... make sure we've been passed a numeric vector
+		if ( !is.vector(labels, mode="numeric")) {stop("Label vector must be a numeric vector")}
+		
+	}
+
 
 	# loop thru all labels, creating a mask for each
 	return_list <- list()

@@ -418,11 +418,13 @@ setMethod(
 
 			# loop over all volumes and read the slice
 			for ( ndx in 1:length(filenames) ) {
-				if ( R_DEBUG_rmincIO ) cat(sprintf("calling read_hyperslab and setting slice array column %d from volume %s\n", ndx, filenames[ndx]))
-            print(filenames[ndx])
-            print(startIndices)
-            print(dimSizes)
-            print(mincInfo@nDimensions)
+				if ( R_DEBUG_rmincIO ) {
+               cat(sprintf("calling read_hyperslab and setting slice array column %d from volume %s\n", ndx, filenames[ndx]))
+               print(filenames[ndx])
+               print(startIndices)
+               print(dimSizes)
+               print(mincInfo@nDimensions)
+            }
 				mincSlice[,ndx] <- .Call("read_hyperslab",
 										as.character(filenames[ndx]),
 										as.integer(startIndices),
@@ -503,7 +505,12 @@ setMethod(
 							volumeType=mincSliceMatrix@volumeType,
 							colorMap=mincSliceMatrix@colorMap,
 							aspectRatio=aspectRatio)
-		
+
+      # set the filename, if taking a slice from a set of volumes
+		if ( length(mincSliceMatrix@filenames) > 1 ) {
+         mincSlice@mincInfo@filename <- mincSliceMatrix@filenames[sliceIndex]
+      }
+
 		# DONE. Return the new volume array object.
 		return(mincSlice)
 	}

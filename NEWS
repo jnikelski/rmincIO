@@ -1,3 +1,9 @@
+Version 1.9
+====================
+* converted the main IO routines to Rcpp/C++
+* lots of tweaks resulting from new RUnit tests in rmincIO.extras pkg
+* removed dummy Rcpp code
+
 Version 1.2
 ====================
 * now using Makevars instead of .configure

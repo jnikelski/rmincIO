@@ -10,7 +10,7 @@ rmincUtil.isReadable <- function(filenames) {
     rValue <- FALSE
 	for ( ndx in 1:length(filenames) ) {
 		if ( file.access(filenames[ndx], READ_PERMISSION) != 0 ) {
-			warning(sprintf("File: %s is not accessible.\n"))
+			warning(sprintf("File: %s is not accessible.\n", filenames[ndx]))
 		}
 	}
   }
@@ -188,7 +188,7 @@ rmincUtil.getDataClasses <- function() {
 
 
 
-rmincUtil.checkForExternalProgram <- function(program, test_string, prog_options="") {
+rmincUtil.checkForExternalProgram <- function(program, test_string, prog_options="", run_it=TRUE) {
 	# =============================================================================
 	# Purpose: Check for the existence of an external program.
 	#
@@ -207,18 +207,41 @@ rmincUtil.checkForExternalProgram <- function(program, test_string, prog_options
 	#	result <- rmincUtil.checkForExternalProgram(program, test_string, progOptions)
 	#	if ( !result ) { ... }
 	#
-	# Note: Nothing of note, really.
+	# Note: 
+   # The R "system" function does not capture the output when an error status is returned.
+   # However, redirecting syserr/sysout permits "system" to capture the ascii_binary output
+   # So, passing a final progOption of " 2>&1 " should solve this. I encountered this
+   # with the ascii_binary program, which , when called with no args, 
+   # returns a non-zero (error) status
 	#
 	# =============================================================================
 	#
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: >>rmincUtil.checkForExternalProgram\n"))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: rmincUtil.checkForExternalProgram: test_string = %s\n", test_string))
 
-	# create string to submit to shell and then run it
+	# first, make sure that the program is on the user's path
+   pathname <- Sys.which(program)
+   if ( pathname == "" ) {
+      warning(sprintf("Program [%s] not found on path", program))
+      return(FALSE)
+   }
+
+   # OK, we now know that the program is on our PATH. Do we want to see whether
+   # we can actually execute the program? If not, just return right now.
+   if ( !run_it ) {
+      if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: <<rmincUtil.checkForExternalProgram\n"))
+      return(TRUE)
+   }
+
+   # create string to submit to shell and then run it
 	cmd <- paste(program, prog_options)
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: rmincUtil.checkForExternalProgram: cmd = %s\n", cmd))
 	cmdOut <- system(cmd, intern=TRUE, wait=TRUE)
 	
 	# collapse all output into a single line for easy grepping
 	cmdOutLong <- paste(cmdOut, collapse="")
-	
+	#cat(sprintf("cmdOutLong = %s\n", cmdOutLong))
+
 	# look for test string in output
 	if ( !grepl(test_string, cmdOutLong, fixed=TRUE) ) {
 		# test string not found??
@@ -229,7 +252,8 @@ rmincUtil.checkForExternalProgram <- function(program, test_string, prog_options
 	}
 	
 	# return TRUE if we made this far
-	return(TRUE)
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: <<rmincUtil.checkForExternalProgram\n"))
+   return(TRUE)
 }
 
 
@@ -253,16 +277,26 @@ rmincUtil.readLinearXfmFile <- function(xfmFilename) {
 	program <- "xfm2param"
 	progOptions <- "-version"
 	test_string <- "mni_autoreg"
-	status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions)
+	status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions, run_it=FALSE)
 	if ( !status ) { stop("Program xfm2param of package mni_autoreg cannot be found on PATH") }
 
 	# OK, so we have xfm2pram -- now let's do the read
 	# ... first have xfm2param place tabular output in a temp file
 	tmpfile <- tempfile("rmincUtil.readLinearXfmFile")
 	cmd <- paste("xfm2param", xfmFilename, "> ", tmpfile)
-	# ... now read the nicely formatted tabular file
-	system(cmd, intern=TRUE, wait=TRUE)
-	xfm.df <- read.table(tmpfile, skip=1, stringsAsFactors=FALSE)
+   system(cmd, intern=TRUE, wait=TRUE)
+	
+   # now, before we can read the xfm, we need to know whether we're dealing with a 
+   # regular xfm or a "concatenated transform" (as used with nonlinear grid volumes)
+   # So ... read the converted xfm and look for a specific keyword
+   concatenatedXfm <- FALSE
+   xfm.v <- readLines(tmpfile)
+   concatenatedXfm <- any(grepl("[CONCATENATED TRANSFORM]", xfm.v, fixed=TRUE))
+
+   # set num of lines to skip (depending on xfm type) and then
+   # read the nicely formatted tabular file
+   nSkip <- ifelse(concatenatedXfm, 2, 1)
+	xfm.df <- read.table(tmpfile, header=FALSE, skip=nSkip, nrows=5, stringsAsFactors=FALSE)
 	
 	# make first column into row names
 	rowNames <- xfm.df[,1]
@@ -349,6 +383,7 @@ rmincUtil.asMniObjAscii <- function(filename, keepName=TRUE) {
    #
    # =============================================================================
    #
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: >>rmincUtil.asMniObjAscii\n"))
    #
    # is it already Ascii? Just return the input filename.
    if ( rmincUtil.isMniObjAscii(filename) ) return(filename)
@@ -360,10 +395,16 @@ rmincUtil.asMniObjAscii <- function(filename, keepName=TRUE) {
    }
 
    # before we do anything, make sure that the conversion program is on the user's PATH
+   # note: need to set options to " 2>&1 " because:
+   # (1) ascii_binary has no "-help" options
+   # (2) ascii_binary, when called with no args, returns a non-zero (error) status
+   # (3) the R "system" function does not capture the output when an error status is returned
+   # Sooooo .... redirecting syserr/sysout permits "system" to capture the ascii_binary output
+   #
    program <- "ascii_binary"
-   progOptions <- ""
+   progOptions <- " 2>&1 "
    test_string <- "Usage:"
-   status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions)
+   status <- rmincUtil.checkForExternalProgram(program, test_string, progOptions, run_it=FALSE)
    if ( !status ) {
       stop("Program ascii_binary of package bicpl cannot be found on PATH")
    }
@@ -383,9 +424,13 @@ rmincUtil.asMniObjAscii <- function(filename, keepName=TRUE) {
 
    # do the conversion
    sysCmd <- paste("ascii_binary", filename, tmpFile, "ascii")
-   print(sysCmd)
-   system(sysCmd, wait=TRUE)
+   if ( R_DEBUG_rmincIO ) print(sysCmd)
+   status <- system(sysCmd, wait=TRUE)
+   if ( status != 0 ) {
+      stop("Program ascii_binary of package bicpl returned an error status.")
+   }
    #
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: <<rmincUtil.asMniObjAscii\n"))
    return(tmpFile)
 }
 

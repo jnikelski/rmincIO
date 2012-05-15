@@ -150,7 +150,7 @@ setMethod(
 
 		# read the object file into a buffer
 		fileCon <- file(filename, open="rt", blocking=TRUE)
-		buffer <- readLines(fileCon)
+		buffer <- readLines(fileCon, warn=FALSE)
 		close(fileCon)
 
 

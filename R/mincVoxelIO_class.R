@@ -218,7 +218,7 @@ setMethod(
 
 
 # METHOD: mincIO.readByVoxel(character, numeric)
-# PURPOSE: read a specific voxel value across many minn volumes
+# PURPOSE: read a specific voxel value across many minc volumes
 setMethod(
 	"mincIO.readByVoxel", 
 	signature=signature(filenames="character"),
@@ -347,7 +347,9 @@ mincIO.readByVoxelX <- function(filenames, voxelCoords) {
 	# make coords z,y,x order and 0-relative for C-call
 	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): making coords C-relative\n"))
 	adjVoxCoords <- rev(voxelCoords) -1
-	
+	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): adj coords = [%d], [%d], [%d]\n",
+													adjVoxCoords[1], adjVoxCoords[2], adjVoxCoords[3]))
+
 	# OK. Now that we passsed validation, let's get the values
 	if ( R_DEBUG_rmincIO ) cat(sprintf("Debug mincIO.readByVoxelX(): calling read_voxel_from_files\n"))
 	voxel.mat <- .Call("read_voxel_from_files",

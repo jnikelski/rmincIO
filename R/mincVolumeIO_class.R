@@ -592,7 +592,21 @@ mincIO.writeVolumeX <- function(mincVolume, filename) {
 	if ( R_DEBUG_rmincIO ) cat(">> mincIO.writeVolumeX() ... \n")
 
 
-	# set start indices and counts to read an entire volume, then read
+   # default the data class/type for volume write to REAL/signed_short
+   # ... else the user might be confused when, for example, inadvertantly 
+   # ... writing to an unsigned byte volume and seeing *nothing*
+   # ... in the output volume. We could always permit an over-ride of
+   # ... this behaviour, if needed.
+   dataClass.df <- rmincUtil.getDataClasses()
+   enumCode <- which(dataClass.df$string == "REAL")
+   mincVolume@mincInfo@volumeDataClass <- dataClass.df$numCode[enumCode]
+
+   dataType.df <- rmincUtil.getDataTypes()
+   enumCode <- which(dataType.df$code == "MI_TYPE_SHORT")
+   mincVolume@mincInfo@volumeDataType <- dataType.df$numCode[enumCode]
+
+
+   # set start indices and counts to write an entire volume, then write
 	if ( R_DEBUG_rmincIO ) cat(">> mincIO.writeVolumeX() >> mincIO.write_volume() ... \n")
 	callStatus <- .Call("write_volume",
                as.character(filename),
@@ -762,7 +776,7 @@ setMethod(
 			mincInfo@volumeDataClass <- dataClass.df$numCode[enumCode]
 
 			dataType.df <- rmincUtil.getDataTypes()
-			enumCode <- which(dataType.df$code == "MI_TYPE_UBYTE")
+			enumCode <- which(dataType.df$code == "MI_TYPE_SHORT")
 			mincInfo@volumeDataType <- dataType.df$numCode[enumCode]
 
 			mincInfo@spaceType <- "talairach_"

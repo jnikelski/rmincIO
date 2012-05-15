@@ -8,7 +8,7 @@
 # =============================================================================
 #
 civet.checkVersion <- function(civetVersion) {
-	if ( civetVersion != "1.1.9" &&  civetVersion != "1.1.7") {
+	if ( civetVersion != "1.1.9" &&  civetVersion != "1.1.7" &&  civetVersion != "1.1.11") {
 		warning(sprintf("This function has not been tested with Civet version %s. Use at your own risk.", civetVersion), immediate.=TRUE)
 	}
 	return
@@ -30,7 +30,7 @@ civet.checkVersion <- function(civetVersion) {
 #	exist for this function to work.
 # =============================================================================
 #
-civet.getFilenameClassify <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameClassify <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -60,7 +60,7 @@ civet.getFilenameClassify <- function(scanID, baseDir, civetVersion="1.1.9", ful
 # Note: civet.getFilenameClassify
 # =============================================================================
 #
-civet.getFilenameGrayMatterPve <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameGrayMatterPve <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -79,7 +79,7 @@ civet.getFilenameGrayMatterPve <- function(scanID, baseDir, civetVersion="1.1.9"
 	return(files)
 }
 	#
-civet.getFilenameWhiteMatterPve <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameWhiteMatterPve <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -98,7 +98,7 @@ civet.getFilenameWhiteMatterPve <- function(scanID, baseDir, civetVersion="1.1.9
 	return(files)
 }
 	#
-civet.getFilenameCsfPve <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameCsfPve <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -127,7 +127,7 @@ civet.getFilenameCsfPve <- function(scanID, baseDir, civetVersion="1.1.9", fullP
 # Note: civet.getFilenameClassify
 # =============================================================================
 #
-civet.getFilenameStxT1 <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameStxT1 <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -157,7 +157,7 @@ civet.getFilenameStxT1 <- function(scanID, baseDir, civetVersion="1.1.9", fullPa
 #		the brain mask does *not* include the cerebellum.
 # =============================================================================
 #
-civet.getFilenameCerebrumMask <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameCerebrumMask <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -176,7 +176,7 @@ civet.getFilenameCerebrumMask <- function(scanID, baseDir, civetVersion="1.1.9",
 	return(files)
 }
 #
-civet.getFilenameSkullMask <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameSkullMask <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -205,7 +205,42 @@ civet.getFilenameSkullMask <- function(scanID, baseDir, civetVersion="1.1.9", fu
 # Note: civet.getFilenameClassify
 # =============================================================================
 #
-civet.getFilenameGrayMatterSurfaces <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameGrayMatterSurfaces <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE,
+                                                   resampled=TRUE) {
+	#
+	# check whether the Civet version has been tested
+	civet.checkVersion(civetVersion)
+	
+	# get a list of matching filenames in the classify dir, and return
+	baseDir <- path.expand(baseDir)
+	scanRoot <- file.path(baseDir, scanID)
+	surfacesDir <- file.path(scanRoot, 'surfaces')
+
+   # get LH surface name
+   sideStr <- "_left"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_gray_surface", rslStr, sideStr, "_*.obj", sep="")
+	filesLH <- list.files(surfacesDir, pattern=glob2rx(pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: sideStr=%s -- rslStr=%s -- pattern=%s\n", sideStr, rslStr, pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: filesLH=%s\n", filesLH))
+
+   # get RH surface name
+   sideStr <- "_right"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_gray_surface", rslStr, sideStr, "_*.obj", sep="")
+   filesRH <- list.files(surfacesDir, pattern=glob2rx(pattern))
+	
+	# fully-qualified path requested?
+	files <- c(filesLH, filesRH)
+   if ( fullPath ) {
+		files <- file.path(surfacesDir, files)
+	}
+	
+	return(list(left=files[1], right=files[2]))
+}
+#
+civet.getFilenameWhiteMatterSurfaces <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE,
+                                                   resampled=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -215,14 +250,22 @@ civet.getFilenameGrayMatterSurfaces <- function(scanID, baseDir, civetVersion="1
 	scanRoot <- file.path(baseDir, scanID)
 	surfacesDir <- file.path(scanRoot, 'surfaces')
 	
-	# do we have rsl files? (we can get this in earlier Civet versions)
-	files <- list.files(surfacesDir, pattern=glob2rx("*_gray_surface_rsl_*.obj"))
-	# ... if not, look for non-resampled surfaces 
-	if ( length(files) == 0 ) {
-		files <- list.files(surfacesDir, pattern=glob2rx("*_gray_surface_*.obj"))
-	}
+   # get LH surface name
+   sideStr <- "_left"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_white_surface", rslStr, sideStr, "*_calibrated_*.obj", sep="")
+   filesLH <- list.files(surfacesDir, pattern=glob2rx(pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: sideStr=%s -- rslStr=%s -- pattern=%s\n", sideStr, rslStr, pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: filesLH=%s\n", filesLH))
+
+   # get RH surface name
+   sideStr <- "_right"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_white_surface", rslStr, sideStr, "*_calibrated_*.obj", sep="")
+   filesRH <- list.files(surfacesDir, pattern=glob2rx(pattern))
 	
 	# fully-qualified path requested?
+   files <- c(filesLH, filesRH)
 	if ( fullPath ) {
 		files <- file.path(surfacesDir, files)
 	}
@@ -230,7 +273,8 @@ civet.getFilenameGrayMatterSurfaces <- function(scanID, baseDir, civetVersion="1
 	return(list(left=files[1], right=files[2]))
 }
 #
-civet.getFilenameWhiteMatterSurfaces <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameMidSurfaces <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE,
+                                                   resampled=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -240,39 +284,22 @@ civet.getFilenameWhiteMatterSurfaces <- function(scanID, baseDir, civetVersion="
 	scanRoot <- file.path(baseDir, scanID)
 	surfacesDir <- file.path(scanRoot, 'surfaces')
 	
-	# do we have rsl files? (we can get this in earlier Civet versions)
-	files <- list.files(surfacesDir, pattern=glob2rx("*_white_surface_rsl_*_calibrated_*.obj"))
-	# ... if not, look for non-resampled surfaces 
-	if ( length(files) == 0 ) {
-		files <- list.files(surfacesDir, pattern=glob2rx("*_white_surface_*_calibrated_*.obj"))
-	}
+   # get LH surface name
+   sideStr <- "_left"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_mid_surface", rslStr, sideStr, "_*.obj", sep="")
+   filesLH <- list.files(surfacesDir, pattern=glob2rx(pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: sideStr=%s -- rslStr=%s -- pattern=%s\n", sideStr, rslStr, pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: filesLH=%s\n", filesLH))
+
+   # get RH surface name
+   sideStr <- "_right"
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_mid_surface", rslStr, sideStr, "_*.obj", sep="")
+   filesRH <- list.files(surfacesDir, pattern=glob2rx(pattern))
 	
 	# fully-qualified path requested?
-	if ( fullPath ) {
-		files <- file.path(surfacesDir, files)
-	}
-	
-	return(list(left=files[1], right=files[2]))
-}
-#
-civet.getFilenameMidSurfaces <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
-	#
-	# check whether the Civet version has been tested
-	civet.checkVersion(civetVersion)
-	
-	# get a list of matching filenames in the classify dir, and return
-	baseDir <- path.expand(baseDir)
-	scanRoot <- file.path(baseDir, scanID)
-	surfacesDir <- file.path(scanRoot, 'surfaces')
-	
-	# do we have rsl files? (we can get this in earlier Civet versions)
-	files <- list.files(surfacesDir, pattern=glob2rx("*_mid_surface_rsl_*.obj"))
-	# ... if not, look for non-resampled surfaces 
-	if ( length(files) == 0 ) {
-		files <- list.files(surfacesDir, pattern=glob2rx("*_mid_surface_*.obj"))
-	}
-	
-	# fully-qualified path requested?
+   files <- c(filesLH, filesRH)
 	if ( fullPath ) {
 		files <- file.path(surfacesDir, files)
 	}
@@ -290,7 +317,8 @@ civet.getFilenameMidSurfaces <- function(scanID, baseDir, civetVersion="1.1.9", 
 # Note: civet.getFilenameClassify
 # =============================================================================
 #
-civet.getFilenameCorticalThickness <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameCorticalThickness <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE,
+                                                   resampled=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -299,7 +327,14 @@ civet.getFilenameCorticalThickness <- function(scanID, baseDir, civetVersion="1.
 	baseDir <- path.expand(baseDir)
 	scanRoot <- file.path(baseDir, scanID)
 	ctDir <- file.path(scanRoot, 'thickness')
-	files <- list.files(ctDir, pattern=glob2rx("*_native_rms_rsl_tlink_20mm_*.txt"))
+
+   # get left & right hemisphere filenames
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_native_rms", rslStr, "_tlink_20mm_*.txt", sep="")
+   files <- list.files(ctDir, pattern=glob2rx(pattern))
+
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: rslStr=%s -- pattern=%s\n", rslStr, pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: files=%s\n", files))
 	
 	# fully-qualified path requested?
 	if ( fullPath ) {
@@ -319,25 +354,32 @@ civet.getFilenameCorticalThickness <- function(scanID, baseDir, civetVersion="1.
 # Note: civet.getFilenameClassify
 # =============================================================================
 #
-civet.getFilenameMeanSurfaceCurvature <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
-	#
-	# check whether the Civet version has been tested
-	civet.checkVersion(civetVersion)
-	
-	# get a list of matching filenames in the classify dir, and return
-	baseDir <- path.expand(baseDir)
-	scanRoot <- file.path(baseDir, scanID)
-	ctDir <- file.path(scanRoot, 'thickness')
-	files <- list.files(ctDir, pattern=glob2rx("*_native_mc_rsl_20mm_*.txt"))
-	
-	# fully-qualified path requested?
-	if ( fullPath ) {
-		files <- file.path(ctDir, files)
-	}
-	
-	return(list(left=files[1], right=files[2]))
+civet.getFilenameMeanSurfaceCurvature <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE,
+                                                   resampled=TRUE) {
+   #
+   # check whether the Civet version has been tested
+   civet.checkVersion(civetVersion)
+   
+   # get a list of matching filenames in the classify dir, and return
+   baseDir <- path.expand(baseDir)
+   scanRoot <- file.path(baseDir, scanID)
+   ctDir <- file.path(scanRoot, 'thickness')
+
+   # get left & right hemisphere filenames
+   rslStr <- ifelse(resampled, "_rsl", "")
+   pattern <- paste("*_native_mc", rslStr, "_20mm_*.txt", sep="")
+   files <- list.files(ctDir, pattern=glob2rx(pattern))
+
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: rslStr=%s -- pattern=%s\n", rslStr, pattern))
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: files=%s\n", files))
+   
+   # fully-qualified path requested?
+   if ( fullPath ) {
+      files <- file.path(ctDir, files)
+   }
+   
+   return(list(left=files[1], right=files[2]))
 }
-#
 
 
 # =============================================================================
@@ -349,7 +391,7 @@ civet.getFilenameMeanSurfaceCurvature <- function(scanID, baseDir, civetVersion=
 #		the xfm filename and the grid volume name.
 # =============================================================================
 #
-civet.getFilenameLinearTransform <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameLinearTransform <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -369,7 +411,7 @@ civet.getFilenameLinearTransform <- function(scanID, baseDir, civetVersion="1.1.
 }
 #
 #
-civet.getFilenameNonlinearTransform <- function(scanID, baseDir, civetVersion="1.1.9", fullPath=TRUE) {
+civet.getFilenameNonlinearTransform <- function(scanID, baseDir, civetVersion="1.1.11", fullPath=TRUE) {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -391,80 +433,6 @@ civet.getFilenameNonlinearTransform <- function(scanID, baseDir, civetVersion="1
 }
 
 
-
-
-civet.getAllFilenames <- function(gf, idvar, prefix, basedir, append=TRUE, civetVersion="1.1.9") {
-	# =============================================================================
-	# Purpose: This function returns a selection of Civet filenames by appending
-	#			new columns to the end of the passed glim file.
-	#
-	#			Unlike the civet.getFilename* functions, here we do not test
-	#			for the existence of the file.
-	#
-	# Example:
-	#	idColName <- "subjectID"
-	#	prefix <- "ADNI"
-	#	basedir <- "~/tmp/ADNI/civet/pipeOut"
-	#	newGlim.df <- civetFilenames(glim.df, idColName, prefix, basedir)
-	#
-	#
-	# Note: Original code written by Jason Lerch, I (Jim) just changed the name
-	#		to use the new civet.* prefix.
-	#
-	# =============================================================================
-	#
-	# designed for use with CIVET 1.1.9
-	if ( civetVersion != "1.1.9" ) {
-		warning("This function has only been tested with Civet version 1.1.9. Use at your own risk.", immediate.=TRUE)
-	}
-	
-	# extract the scanIDs from the glim
-	ids <- gf[,idvar]
-	# create the scan-level root dir names
-	b <- paste(basedir, "/", ids, "/", sep="")
-
-	# insert fully-qualified file names
-	filenames.df <- data.frame(tissue=rep(0,nrow(gf)))
-	filenames.df$tissue <- paste(b, "classify/", prefix, "_", ids, "_cls_volumes.dat",
-                   sep="")
-	filenames.df$structures <- paste(b, "segment/", prefix, "_", ids, "_masked.dat",
-                       sep="")
-	filenames.df$left.thickness <- paste(b, "thickness/", prefix, "_", ids,
-                           "_native_rms_rsl_tlink_20mm_left.txt", sep="")
-	filenames.df$right.thickness <- paste(b, "thickness/", prefix, "_", ids,
-                           "_native_rms_rsl_tlink_20mm_right.txt", sep="")
-	filenames.df$rightROIthickness <- paste(b, "segment/", prefix, "_", ids,
-                              "_lobe_thickness_tlink_20mm_right.dat", sep="")
-	filenames.df$leftROIthickness <- paste(b, "segment/", prefix, "_", ids,
-                             "_lobe_thickness_tlink_20mm_left.dat", sep="")
-	filenames.df$rightROIarea <- paste(b, "segment/", prefix, "_", ids,
-                         "_lobe_areas_right.dat", sep="")
-	filenames.df$leftROIarea <- paste(b, "segment/", prefix, "_", ids,
-                        "_lobe_areas_left.dat", sep="")
-	filenames.df$GMVBM <- paste(b, "VBM/", prefix, "_", ids,
-                  "_smooth_8mm_gm.mnc", sep="")
-	filenames.df$WMVBM <- paste(b, "VBM/", prefix, "_", ids,
-                  "_smooth_8mm_wm.mnc", sep="")
-	filenames.df$CSFVBM <- paste(b, "VBM/", prefix, "_", ids,
-                   "_smooth_8mm_csf.mnc", sep="")
-	filenames.df$GMVBMsym <- paste(b, "VBM/", prefix, "_", ids,
-                  "_smooth_8mm_gm_sym.mnc", sep="")
-	filenames.df$WMVBMsym <- paste(b, "VBM/", prefix, "_", ids,
-                  "_smooth_8mm_wm_sym.mnc", sep="")
-	filenames.df$CSFVBMsym <- paste(b, "VBM/", prefix, "_", ids,
-                     "_smooth_8mm_csf_sym.mnc", sep="")
-  
-	# append names to the input glim, if desired
-	if ( append == TRUE) {
-		filenames.df <- cbind(gf, filenames.df)
-	}
-
-	return(filenames.df)
-}
-
-
-
-
 # =============================================================================
 # Purpose: 
 #	Read a selection of Civet-generated *.dat files and return the
@@ -478,7 +446,7 @@ civet.getAllFilenames <- function(gf, idvar, prefix, basedir, append=TRUE, civet
 # Note: Nothing really.
 # =============================================================================
 #
-civet.readCivetDatFiles <- function(scanID, baseDir, civetVersion="1.1.9") {
+civet.readCivetDatFiles <- function(scanID, baseDir, civetVersion="1.1.11") {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -516,13 +484,20 @@ civet.readCivetDatFiles <- function(scanID, baseDir, civetVersion="1.1.9") {
 	# ... left
 	gi_left_file <- list.files(subDir, pattern=glob2rx("*_gi_left.dat"))
 	gi_left_file_fullPath <- file.path(subDir, gi_left_file)
-	gi_left.df <- read.table(gi_left_file_fullPath)
+	gi_left.df <- read.table(gi_left_file_fullPath, sep=":")
+   colnames(gi_left.df) <- c("surfaceType", "gi")
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: civet.readCivetDatFiles: gi_left_file_fullPath: %s \n", gi_left_file_fullPath))
+   if ( R_DEBUG_rmincIO ) print(gi_left.df)
+
 	# ... right
 	gi_right_file <- list.files(subDir, pattern=glob2rx("*_gi_right.dat"))
 	gi_right_file_fullPath <- file.path(subDir, gi_right_file)
-	gi_right.df <- read.table(gi_right_file_fullPath)
+	gi_right.df <- read.table(gi_right_file_fullPath, sep=":")
+   colnames(gi_right.df) <- c("surfaceType", "gi")
+   if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: civet.readCivetDatFiles: gi_right_file_fullPath: %s \n", gi_right_file_fullPath))
+   if ( R_DEBUG_rmincIO ) print(gi_right.df)
 	#
-	return_list$gyrification_index <- c(lh=gi_left.df[1,3], rh=gi_right.df[1,3]) 
+	return_list$gyrification_index <- c(lh=gi_left.df[1,"gi"], rh=gi_right.df[1,"gi"]) 
 
 
 
@@ -667,7 +642,7 @@ civet.readCivetDatFiles <- function(scanID, baseDir, civetVersion="1.1.9") {
 #	print(cls_vec["gm"])
 # =============================================================================
 #
-civet.computeStxTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.9") {
+civet.computeStxTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.11") {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -681,7 +656,7 @@ civet.computeStxTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.9")
 	cls_vol <- mincIO.readVolume(filename)
 
 	# explode classify into components
-	clsX <- volume.explodeLabelVolume(cls_vol, civetLabels=TRUE)
+	clsX <- volume.explodeLabelVolume(cls_vol, civetLabels=TRUE, labels=c(1,2,3))
 	
 	# store elements into named vector
 	cls_vec <- numeric(3)
@@ -716,7 +691,7 @@ civet.computeStxTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.9")
 #	print(rescale)
 # =============================================================================
 #
-civet.computeNativeToStxRescalingFactor <- function(scanID, baseDir, civetVersion="1.1.9") {
+civet.computeNativeToStxRescalingFactor <- function(scanID, baseDir, civetVersion="1.1.11") {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)
@@ -747,7 +722,7 @@ civet.computeNativeToStxRescalingFactor <- function(scanID, baseDir, civetVersio
 #	print(cls_vec["gm"])
 # =============================================================================
 #
-civet.computeNativeTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.9") {
+civet.computeNativeTissueVolumes <- function(scanID, baseDir, civetVersion="1.1.11") {
 	#
 	# check whether the Civet version has been tested
 	civet.checkVersion(civetVersion)

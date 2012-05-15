@@ -30,7 +30,7 @@
    packageStartupMessage(paste("Attaching package: ", packagename_fullpath, "\n", sep=""))
    
    # set or clear the debug switch (and report, as needed)
-   R_DEBUG_rmincIO <<- 0
+   R_DEBUG_rmincIO <<- FALSE
    if ( R_DEBUG_rmincIO ) {
       packageStartupMessage("Package rmincIO. Debugging is turned ON.\n")
    }
