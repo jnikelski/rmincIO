@@ -23,7 +23,8 @@ extern "C" {
 // function prototypes
 RcppExport SEXP read_hyperslab(SEXP filename_,  SEXP start_,  SEXP count_, SEXP nDimensions_);
 RcppExport SEXP read_voxel_from_files(SEXP filenames_, SEXP voxCoords_, SEXP noFiles_, SEXP noFrames_);
-
-
+RcppExport SEXP convert_voxel_to_world(SEXP filename_, SEXP voxCoords_);
+RcppExport SEXP convert_world_to_voxel(SEXP filename_, SEXP worldCoords_);
+RcppExport SEXP get_volume_dimnames(SEXP filename_);
 
 #endif

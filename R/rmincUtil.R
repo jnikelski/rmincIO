@@ -90,53 +90,210 @@ rmincUtil.asMinc2 <- function(filename, keepName=TRUE) {
 
 
 rmincUtil.convertVoxelToWorld <- function(filename, voxCoords) {
-	#
-	
-	if ( R_DEBUG_rmincIO ) cat(sprintf(">>rmincUtil.convertVoxelToWorld\n"))
+   # =============================================================================
+   # Purpose: Convert voxel to world coordinates
+   #
+   # Notes: A few:
+   #     (1) the C++ routines want:
+   #           (a) the coordinates to be 0-relative
+   #           (b) to be in volume order
+   #           (c) NOT to include a value for the 4th dim (if existing)
+   #     (2) input voxel coords are specified in xyz order -- this function
+   #           will reorder as needed
+   #     (3) the api always only returns 3 values, regardless of
+   #           dimensionality of the volume
+   #     (4) this function accepts a single set of coordinates (as a vector),
+   #           which is converted to a matrix for processing
+   #     (5) matrix format is nCoords X xyz. So, 10 coords would be passed
+   #           as a 10x3 matrix
+   #
+   # =============================================================================
+   #
+   #
+   
+   if ( R_DEBUG_rmincIO ) cat(sprintf(">>rmincUtil.convertVoxelToWorld\n"))
 
-	# the C routines want the coordinates 0-relative, AND in volume order
-	# ... so convert first
-	voxCoords <- rev(voxCoords) -1
-	
-	# dunno why, but the voxel coordinates are passed as doubles
-	output <- .Call("convert_voxel_to_world_mincIO",
+   # make sure that we have a valid coord structure
+   if ( !is.vector(voxCoords) && !is.matrix(voxCoords) ) {
+      stop(sprintf("rmincUtil.convertVoxelToWorld requires either a vector or matrix argument"))
+   }
+   
+   # ... and must be numeric
+   if ( !is.numeric(voxCoords) ) {
+      stop(sprintf("rmincUtil.convertVoxelToWorld requires the coords to be of numeric type"))
+   }
+
+   # if we were passed a matrix, validate the dimensions
+   if ( is.matrix(voxCoords) ) {
+      if ( ncol(voxCoords) != 3 ) {
+         stop(sprintf("rmincUtil.convertVoxelToWorld: Exactly 3 coordinates must be specified"))
+      }
+      # copy and rename prior to changing
+      voxCoords.m <- voxCoords
+      dimnames(voxCoords.m) <- list(NULL, c("xspace", "yspace", "zspace"))
+   }
+   
+   # if we were passed a vector, recast as a matrix
+   if ( is.vector(voxCoords) ) {
+      if ( length(voxCoords) != 3 ) {
+         stop(sprintf("rmincUtil.convertVoxelToWorld: Exactly 3 coordinates must be specified"))
+      }
+      voxCoords.m <- matrix(voxCoords, nrow=1, byrow=TRUE, dimnames=list(NULL, c("xspace", "yspace", "zspace")))
+   } 
+
+   # map the results -- from xyz -- to volume dim order
+   #
+   # first, read the dimnames from the volume
+   dimnamesVol.v <- rmincUtil.getVolumeDimnames(filename)
+
+   # define offset to jump over the volume's time dim (if there is one)
+   # ... assume first dim is time, if 4 dims
+   ofx <- ifelse(length(dimnamesVol.v) > 3, 1, 0)
+
+   # rebuild the voxel matrix in xyz order
+   if ( R_DEBUG_rmincIO ) {
+      cat(sprintf("Debug: Reordering voxel matrix ...\n"))
+      cat(sprintf("Debug: offset: [%d] ...\n", ofx))
+      cat(sprintf("Debug: dimnamesVol.v:\n"))
+      print(dimnamesVol.v)
+      print(voxCoords.m)
+   }
+   voxCoords.m <- matrix(c(voxCoords.m[,dimnamesVol.v[ofx+1]], 
+                  voxCoords.m[,dimnamesVol.v[ofx+2]], 
+                  voxCoords.m[,dimnamesVol.v[ofx+3]]), ncol=3, byrow=FALSE)
+
+   # subtract 1 to make 0-relative
+   voxCoords.m <- voxCoords.m -1
+
+
+   # dunno why, but the voxel coordinates are passed as doubles
+   stopifnot( is.matrix(voxCoords.m), is.double(voxCoords.m) )
+   if ( R_DEBUG_rmincIO ) {
+      cat(sprintf("rmincUtil.convertVoxelToWorld: calling C++. Function args:\n"))
+      cat(sprintf("filename: %s\n", filename))
+      cat(sprintf("voxel coordinates:\n"))
+      print(voxCoords.m)
+   }
+   #
+   output <- .Call("convert_voxel_to_world",
                as.character(filename),
-               as.double(voxCoords), PACKAGE="rmincIO")
+               voxCoords.m, PACKAGE="rmincIO")
 
-	# return a vector of 3 doubles
-	if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.convertVoxelToWorld\n"))
-	return(output)
+   
+   # world coords are returned in x,y,z order. Change back to vector if vector
+   # was passed as input, and add col labels
+   if ( is.vector(voxCoords) ) {
+      stopifnot(nrow(output) == 1)
+      output <- as.vector(output[1,])
+      names(output) <- c("x", "y", "z")
+   }
+
+   # if passed as matrix, add col labels
+   if ( is.matrix(voxCoords) ) {
+      dimnames(output) <- list(NULL, c("x", "y", "z"))
+   }
+
+
+   if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.convertVoxelToWorld\n"))
+   return(output)
 }
 
 
 
 rmincUtil.convertWorldToVoxel <- function(filename, worldCoords) {
-	#
-	# dunno why, but the voxel coordinates are passed as doubles
-	if ( R_DEBUG_rmincIO ) cat(sprintf(">>rmincUtil.convertWorldToVoxel\n"))
+   # =============================================================================
+   # Purpose: Convert world to voxel coordinates
+   #
+   # Notes: A few:
+   #  (1)   input world coords are in x,y,z order
+   #  (2)   the api returns 3 or 4 values, depending on
+   #        dimensionality of the volume, however, this function
+   #        prunes off the 4th dim -- thus it only returns 3
+   #  (3)   returned coords are in volume order
+   #  (4)   this function accepts a single set of coordinates (as a vector)
+   #        If you need to pass many, call the "many" version of this
+   #
+   # =============================================================================
+   #
+   #
+   if ( R_DEBUG_rmincIO ) cat(sprintf(">>rmincUtil.convertWorldToVoxel\n"))
 
-	output <- .Call("convert_world_to_voxel_mincIO",
+   # make sure that we have a valid coord structure
+   if ( !is.vector(worldCoords) && !is.matrix(worldCoords) ) {
+      stop(sprintf("rmincUtil.convertWorldToVoxel requires either a vector or matrix argument"))
+   }
+   
+   # ... and must be numeric
+   if ( !is.numeric(worldCoords) ) {
+      stop(sprintf("rmincUtil.convertWorldToVoxel requires the coords to be of numeric type"))
+   }
+
+   # if we were passed a matrix, validate the dimensions
+   if ( is.matrix(worldCoords) ) {
+      if ( ncol(worldCoords) != 3 ) {
+         stop(sprintf("rmincUtil.convertWorldToVoxel: Exactly 3 coordinates must be specified"))
+      }
+      # copy and rename prior to changing
+      worldCoords.m <- worldCoords
+   }
+   
+   # if we were passed a vector, recast as a matrix
+   if ( is.vector(worldCoords) ) {
+      if ( length(worldCoords) != 3 ) {
+         stop(sprintf("rmincUtil.convertWorldToVoxel: Exactly 3 coordinates must be specified"))
+      }
+      worldCoords.m <- matrix(worldCoords, nrow=1, byrow=TRUE)
+   } 
+
+
+   # make the .Call
+   stopifnot( is.matrix(worldCoords.m), is.double(worldCoords.m) )
+   if ( R_DEBUG_rmincIO ) {
+      cat(sprintf("rmincUtil.convertWorldToVoxel: calling C++. Function args:\n"))
+      cat(sprintf("filename: %s\n", filename))
+      cat(sprintf("world coordinates input:\n"))
+      print(worldCoords.m)
+   }
+   #
+   output.m <- .Call("convert_world_to_voxel",
                as.character(filename),
-               as.double(worldCoords), PACKAGE="rmincIO")
-	if ( R_DEBUG_rmincIO ) {
-	  cat(sprintf("voxel coordinates returned by .Call ...\n"))
-	  print(output)
-	}
+               worldCoords.m, PACKAGE="rmincIO")
 
-	# return a vector of 3 doubles 
-	# ... 0-relative and (t),z,y,x order from C, so let's adjust it for R
-	if ( length(output) == 3 ) {
-		output <- rev(output) +1
-		
-	} else {
-		# 4D volume, so ignore the (first) time dimension
-		output <- rev(output[2:4]) +1
-	}
-	
-	# send it back
-	if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.convertWorldToVoxel\n"))
-	return(output)
+   # add 1 to make 1-relative and round (don't need fractional voxels)
+   output.m <- round(output.m +1)
+
+
+   # map the results -- returned in volume order -- to xyz ordered
+   #
+   # first, read the dimnames from the volume
+   dimnames.v <- rmincUtil.getVolumeDimnames(filename)
+
+   # get indices of interest from the dimnames vector
+   x_ndx <- match("xspace", dimnames.v)
+   y_ndx <- match("yspace", dimnames.v)
+   z_ndx <- match("zspace", dimnames.v)
+
+   # rebuild the voxel matrix in xyz order
+   xyzVoxelCoords <- matrix(c(output.m[,x_ndx], output.m[,y_ndx],output.m[,z_ndx]), ncol=3, byrow=FALSE)
+
+   
+   # change back to vector if vector was passed as input, and add col labels
+   if ( is.vector(worldCoords) ) {
+      stopifnot(nrow(xyzVoxelCoords) == 1)
+      xyzVoxelCoords <- as.vector(xyzVoxelCoords[1,])
+      names(xyzVoxelCoords) <- c("x", "y", "z")
+   }
+
+   # if passed as matrix, add col labels
+   if ( is.matrix(worldCoords) ) {
+      dimnames(xyzVoxelCoords) <- list(NULL, c("x", "y", "z"))
+   }
+
+
+   if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.convertWorldToVoxel\n"))
+   return(xyzVoxelCoords)
 }
+
 
 
 
@@ -432,6 +589,31 @@ rmincUtil.asMniObjAscii <- function(filename, keepName=TRUE) {
    #
    if ( R_DEBUG_rmincIO ) cat(sprintf("Debug: <<rmincUtil.asMniObjAscii\n"))
    return(tmpFile)
+}
+
+
+
+rmincUtil.getVolumeDimnames <- function(filename) {
+   # =============================================================================
+   # Purpose: Get a specific volume's dimension names, in volume order
+   #
+   # Notes: Not really ...
+   #     (1) a character vector is returned containing all dimension
+   #           names (eg., c("zspace","yspace","xspace")
+   #
+   # =============================================================================
+   #
+   
+   if ( R_DEBUG_rmincIO ) cat(sprintf(">>rmincUtil.getVolumeDimnames\n"))
+
+   # make sure that we have a valid minc2 volume
+   volname_fullpath <- rmincUtil.asMinc2(filename)
+
+   dimnames.v <- .Call("get_volume_dimnames",
+                     as.character(volname_fullpath), PACKAGE="rmincIO")
+   
+   if ( R_DEBUG_rmincIO ) cat(sprintf("<<rmincUtil.getVolumeDimnames\n"))
+   return(dimnames.v)
 }
 
 

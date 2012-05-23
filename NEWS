@@ -1,3 +1,12 @@
+Version 1.9.5
+====================
+* converted the world <--> voxel routines to Rcpp/C++
+* added functionality to coord conversion code to permit passing of multiple coords
+* removed the old coordinate conversion code
+* added function *rmincUtil.getVolumeDimnames* to provide volume dimnames in volume order
+* made changes to have rmincIO play better with volume not in zyx order
+* new RUnit unit tests to test the above
+
 Version 1.9
 ====================
 * converted the main IO routines to Rcpp/C++
