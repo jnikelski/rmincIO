@@ -503,7 +503,7 @@ mincIO.readVolumeX <- function(mincInfo, frameNo, volumeType, colorMap) {
 	# if we are dealing with a mask or label volume, do some special things
 	# ...    call round() to make the floats more integer-like, thus allowing 
 	# ...    the user to use the "==" operator in comparisons
-	if ( mincIO.getProperty(mincVolume, "volumeType") == "mask" | 
+	if ( mincIO.getProperty(mincVolume, "volumeType") == "mask" || 
 	    mincIO.getProperty(mincVolume, "volumeType") == "label" ) {
 	    mincVolume <- round(mincVolume)
 	    volMin <- min(mincVolume, na.rm=TRUE)

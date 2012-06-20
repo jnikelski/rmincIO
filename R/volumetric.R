@@ -24,15 +24,6 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 	# components of the returned list
 	tissueTypes <- c("bg", "csf", "gm", "wm")
 
-   # convert label volume to integer-ish values so that we can do
-   # tests of equivalence against integer label values
-   #
-   # this is needed for 2 reasons:
-   # (1) most/many minc volumes are stored as floats (even label volumes)
-   # (2) often the float values are *slightly* different from integers
-   # (3) when R tests for equivalence, it's *very* picky ...
-   label_vol_discrete <- round(label_vol)
-
 
 	# here we have a choice: We either specify which labels we want exploded out,
 	# or, we don't, and we get all of them
@@ -40,7 +31,7 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 	if ( is.null(labels)) {
 		# not specified, so get the set of unique labels
       # note: labels are not returned in any particular order
-		labels <- unique(as.vector(label_vol_discrete))
+		labels <- unique(as.vector(label_vol))
 	} else {
 		# specified, ... make sure we've been passed a numeric vector
 		if ( !is.vector(labels, mode="numeric")) {stop("Label vector must be a numeric vector")}
@@ -56,10 +47,11 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 		label_name <- paste("label", label, sep="_")
 		if ( civetLabels ) { label_name <- tissueTypes[label +1]}
 		if (R_DEBUG_rmincIO) cat(sprintf("processing label %s\n", label_name))
+		cat(sprintf("Debug: volume.explodeLabelVolume: processing label %s\n", label_name))
 		
 		# compute the mask
 		#cat(sprintf("processing label %s\n", label_name))
-		mask_vol <- ifelse(label_vol_discrete == label, 1, 0)
+		mask_vol <- ifelse(label_vol == label, 1, 0)
 		
 		# adjust volume attributes to type of "mask"
 		mincIO.setProperty(mask_vol, "volumeType", "mask")
