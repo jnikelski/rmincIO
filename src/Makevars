@@ -1,5 +1,10 @@
 ## Use the R_HOME indirection to support installations of multiple R version
 #PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
 #
-PKG_CPPFLAGS = -I/data/raid01/software/bic/current/include -Wall
-PKG_LIBS = -L/data/raid01/software/bic/current/lib -lminc2 -lhdf5 -lz -lnetcdf -lm `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+#PKG_CPPFLAGS = -I/data/raid01/software/bic/current/include -Wall
+#PKG_LIBS = -L/data/raid01/software/bic/current/lib -lminc2 -lhdf5 -lz -lnetcdf -lm `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+#
+PKG_CPPFLAGS = -I/opt/minc/1.9.13/include -Wall
+PKG_LIBS = -L/opt/minc/1.9.13/lib -Wl,-Bstatic -lminc2 -lhdf5 -lz -lnetcdf -Wl,-Bdynamic -lm `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+
+

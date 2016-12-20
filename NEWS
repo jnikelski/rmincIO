@@ -1,3 +1,8 @@
+Version 1.9.7
+====================
+* modified various c++ routines to reflect changes made to the minc2 api.
+* most of the changes were related to change of variable type (eg., misize_t, hsize_t)
+
 Version 1.9.6
 ====================
 * removed rgl as a depends

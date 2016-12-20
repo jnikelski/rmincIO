@@ -14,8 +14,8 @@ SEXP read_hyperslab(SEXP filename_,  SEXP start_,  SEXP count_, SEXP nDimensions
 
    mihandle_t     minc_volume;
    int            result;
-   unsigned long  hSlab_start[MI2_MAX_VAR_DIMS];
-   unsigned long  hSlab_count[MI2_MAX_VAR_DIMS];
+   hsize_t        hSlab_start[MI2_MAX_VAR_DIMS];
+   hsize_t        hSlab_count[MI2_MAX_VAR_DIMS];
    const char    *dimorder3d[] = { "zspace","yspace","xspace" };
    const char    *dimorder4d[] = { "time", "zspace","yspace","xspace" };
 
@@ -34,8 +34,8 @@ SEXP read_hyperslab(SEXP filename_,  SEXP start_,  SEXP count_, SEXP nDimensions
    // init the hSlab start and count vectors
    int hSlab_num_entries = 1;
    for (int ndx=0; ndx < nDimensions; ++ndx) {
-      hSlab_start[ndx] = (unsigned long) start[ndx];
-      hSlab_count[ndx] = (unsigned long) count[ndx];
+      hSlab_start[ndx] = (hsize_t) start[ndx];
+      hSlab_count[ndx] = (hsize_t) count[ndx];
       hSlab_num_entries = hSlab_num_entries * hSlab_count[ndx];
    }
    if ( R_DEBUG_rmincIO ) 
@@ -133,8 +133,8 @@ SEXP read_voxel_from_files(SEXP filenames_,  SEXP voxCoords_,  SEXP noFiles_,  S
    mihandle_t     minc_volume;
    int            n_dimensions;
    int            output_ndx;
-   unsigned long  hSlab_start[MI2_MAX_VAR_DIMS];
-   unsigned long  hSlab_count[MI2_MAX_VAR_DIMS];
+   hsize_t        hSlab_start[MI2_MAX_VAR_DIMS];
+   hsize_t        hSlab_count[MI2_MAX_VAR_DIMS];
    const char *dimorder3d[] = { "zspace","yspace","xspace" };
    const char *dimorder4d[] = { "time", "zspace","yspace","xspace" };
    
@@ -152,9 +152,9 @@ SEXP read_voxel_from_files(SEXP filenames_,  SEXP voxCoords_,  SEXP noFiles_,  S
    /*set the xyz coords of the sampled point
    ... hSlab_start[0] will hold the frame index */
    hSlab_start[0] = 0;
-   hSlab_start[1] = (unsigned long) voxCoords[0];
-   hSlab_start[2] = (unsigned long) voxCoords[1];
-   hSlab_start[3] = (unsigned long) voxCoords[2];
+   hSlab_start[1] = (hsize_t) voxCoords[0];
+   hSlab_start[2] = (hsize_t) voxCoords[1];
+   hSlab_start[3] = (hsize_t) voxCoords[2];
 
 	// allocate receiving matrix 
 

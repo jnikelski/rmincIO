@@ -33,8 +33,8 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 	
 	// pointer to the volume data
 	double			*hSlab_p;
-	unsigned long	hSlab_start[MI2_MAX_VAR_DIMS];
-	unsigned long	hSlab_count[MI2_MAX_VAR_DIMS];
+	misize_t			hSlab_start[MI2_MAX_VAR_DIMS];
+	misize_t			hSlab_count[MI2_MAX_VAR_DIMS];
 
 
 	// start ...
@@ -164,16 +164,9 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 		error("Error in miset_real_value_hyperslab: %s.\n", CHAR(STRING_ELT(filename, 0)));
 	}
 
-
-
-
-	// free resources
-	mifree_volume_props(volume_properties);								// free the property list
-	for ( ndx=0; ndx<no_dimensions; ++ndx) {							// free the dimhandles
-		mifree_dimension_handle(dim[ndx]);
-	}
 	// close new volume
-	result = miclose_volume(minc_volume);
+		result = miclose_volume(minc_volume);
+
 	if (result != MI_NOERROR) {
 		error("write_volume: Error closing newly created volume %s.\n", CHAR(STRING_ELT(filename, 0)));
 	}

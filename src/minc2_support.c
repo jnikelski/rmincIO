@@ -20,7 +20,7 @@ SEXP get_volume_info(SEXP filename) {
 	int					n_frames;
 	
 // variables to hold dim-related info
-	unsigned int		dim_sizes[MI2_MAX_VAR_DIMS];
+	misize_t				dim_sizes[MI2_MAX_VAR_DIMS];
 	double				dim_starts[MI2_MAX_VAR_DIMS];
 	double				dim_steps[MI2_MAX_VAR_DIMS];
 	double				time_offsets[MAX_FRAMES];
