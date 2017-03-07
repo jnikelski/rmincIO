@@ -36,11 +36,11 @@ setClass("MincVolumeIO",
 						volumeIntensityRange="numeric",
 						frameNumber="numeric",
 						volumeType="character",
-						colorMap="character" ),
+						colorMap="character"),
 		prototype( volumeIntensityRange=c(0,0),
 					frameNumber=0,
 		 			volumeType="default",
-					colorMap="default" ),
+					colorMap="default"),
 		contains="array"
 )
 
@@ -130,7 +130,9 @@ setMethod(
 		                      "volumeIntensityRange",
 		                      "frameNumber",
 		                      "volumeType",
-		                      "colorMap")
+		                      "colorMap",
+		                      "volumeDataClass",
+		                      "volumeDataType")
 
 		# is the passed property settable?
 		if ( !propertyId %in% valid_properties ) {
@@ -150,6 +152,8 @@ setMethod(
 		if ( propertyId == "volumeType") mincIOobj@volumeType <- as.character(value)
 		if ( propertyId == "colorMap") mincIOobj@colorMap <- as.character(value)
 
+		if ( propertyId == "volumeDataClass") mincIOobj@mincInfo@volumeDataClass <- as.numeric(value)
+		if ( propertyId == "volumeDataType") mincIOobj@mincInfo@volumeDataType <- as.numeric(value)
 
 		# assign newly updated object to parent frame and then return nothing
 		if ( R_DEBUG_rmincIO ) {
@@ -591,21 +595,6 @@ mincIO.writeVolumeX <- function(mincVolume, filename) {
 #
 	if ( R_DEBUG_rmincIO ) cat(">> mincIO.writeVolumeX() ... \n")
 
-
-   # default the data class/type for volume write to REAL/signed_short
-   # ... else the user might be confused when, for example, inadvertantly 
-   # ... writing to an unsigned byte volume and seeing *nothing*
-   # ... in the output volume. We could always permit an over-ride of
-   # ... this behaviour, if needed.
-   dataClass.df <- rmincUtil.getDataClasses()
-   enumCode <- which(dataClass.df$string == "REAL")
-   mincVolume@mincInfo@volumeDataClass <- dataClass.df$numCode[enumCode]
-
-   dataType.df <- rmincUtil.getDataTypes()
-   enumCode <- which(dataType.df$code == "MI_TYPE_SHORT")
-   mincVolume@mincInfo@volumeDataType <- dataType.df$numCode[enumCode]
-
-
    # set start indices and counts to write an entire volume, then write
 	if ( R_DEBUG_rmincIO ) cat(">> mincIO.writeVolumeX() >> mincIO.write_volume() ... \n")
 	callStatus <- .Call("write_volume",
@@ -615,6 +604,7 @@ mincIO.writeVolumeX <- function(mincVolume, filename) {
                as.double(mincVolume@mincInfo@dimInfo$starts),
                as.double(mincVolume@mincInfo@dimInfo$steps),
                as.integer(mincVolume@mincInfo@volumeDataType),
+               as.integer(mincVolume@mincInfo@volumeDataClass),
                as.double( c( min(mincVolume), max(mincVolume) ) ),
                as.double( getDataPart(mincVolume) ), PACKAGE="rmincIO")
 

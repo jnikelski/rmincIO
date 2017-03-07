@@ -324,6 +324,34 @@ rmincUtil.getDataTypes <- function() {
 
 
 
+rmincUtil.getDataTypeCode <- function(dataTypeAsString) {
+   # =============================================================================
+   # Purpose: Given a data type as a string, return a matching enum value
+   #
+   # Note: Nothing of note, really.
+   #
+   # =============================================================================
+   #
+
+   # create some short-cuts
+   dataType <- toupper(dataTypeAsString)
+   if (dataType == "FLOAT") dataType <- "MI_TYPE_FLOAT"
+   if (dataType == "DOUBLE") dataType <- "MI_TYPE_DOUBLE"
+   if (dataType == "INTEGER") dataType <- "MI_TYPE_INT"
+   if (dataType == "LONG") dataType <- "MI_TYPE_INT"
+   if (dataType == "SHORT") dataType <- "MI_TYPE_SHORT"
+   if (dataType == "BYTE") dataType <- "MI_TYPE_BYTE"
+
+   dataType.df <- rmincUtil.getDataTypes()
+   enumCode <- which(dataType.df$code == dataType)
+   dataTypeCode <- dataType.df$numCode[enumCode]
+   
+   # return the valid data types
+   return(dataTypeCode)
+}
+
+
+
 rmincUtil.getDataClasses <- function() {
 	# =============================================================================
 	# Purpose: return a data.frame containing the minc2 data classes
@@ -341,6 +369,26 @@ rmincUtil.getDataClasses <- function() {
 	
 	# return the valid data classes
 	return(dataClasses.df)
+}
+
+
+
+rmincUtil.getDataClassCode <- function(dataClassAsString) {
+   # =============================================================================
+   # Purpose: Given a data class as a string, return a matching enum value
+   #
+   # Note: Nothing of note, really.
+   #
+   # =============================================================================
+   #
+
+   dataClass <- toupper(dataClassAsString)
+   dataClass.df <- rmincUtil.getDataClasses()
+   enumCode <- which(dataClass.df$string == dataClass)
+   dataClassCode <- dataClass.df$numCode[enumCode]
+   
+   # return the valid data types
+   return(dataClassCode)
 }
 
 

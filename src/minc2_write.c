@@ -15,6 +15,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 								SEXP dimStarts, 
 								SEXP dimSteps, 
 								SEXP volumeDataType, 
+								SEXP volumeDataClass,
 								SEXP volumeRange, 
 								SEXP hSlab) {
 
@@ -30,6 +31,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 	double			dim_steps[MI2_MAX_VAR_DIMS];
 	double			volume_range_min, volume_range_max;
 	int				volume_data_type;
+	int 				volume_data_class;
 	
 	// pointer to the volume data
 	double			*hSlab_p;
@@ -44,6 +46,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 	  ... yes, I could get this myself, but it's best set in the calling R code */
 	no_dimensions = INTEGER(nDimensions)[0];
 	volume_data_type = INTEGER(volumeDataType)[0];
+	volume_data_class = INTEGER(volumeDataClass)[0];
 	volume_range_min = REAL(volumeRange)[0];
 	volume_range_max = REAL(volumeRange)[1];
 	
@@ -129,7 +132,7 @@ SEXP write_volume(SEXP filename, SEXP nDimensions,
 								no_dimensions, 
 								dim,
 								volume_data_type,
-								MI_CLASS_REAL,
+								volume_data_class,
 								volume_properties,
 								&minc_volume);
 	//

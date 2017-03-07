@@ -1,3 +1,8 @@
+Version 1.9.8
+====================
+* modified various functions to permit setting various volumeIO write properties (volumeDataClass, volumeDataType) prior to writing a volume.
+* prior to this, all volumes were written as real/signed-int ... which simplifies things, but may adversely effect precision of float values.
+
 Version 1.9.7
 ====================
 * modified various c++ routines to reflect changes made to the minc2 api.
