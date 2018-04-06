@@ -10,7 +10,7 @@
 #	baseDir <- "~/tmp/ADNI/civet/pipeOut"
 #	labelVolname <- civet.getFilenameClassify(scanID, baseDir)
 #	label_vol <- mincIO.readVolume(labelVolname, volumeType="label")
-#	components <- volume.explodeLabelVolume(label_vol)
+#	components <- volume.explodeLabelVolume(label_vol, opt)
 #
 # Note:
 #	This function returns a list of mincIO objects, with each object
@@ -18,7 +18,7 @@
 #	(if civetLabels == TRUE).
 # =============================================================================
 #
-volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) {
+volume.explodeLabelVolume <- function(label_vol, opt, labels=NULL, civetLabels=TRUE) {
 	
 	# list the tissue types in Civet order, to be used in naming the
 	# components of the returned list
@@ -46,8 +46,7 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 		# determine the list component name
 		label_name <- paste("label", label, sep="_")
 		if ( civetLabels ) { label_name <- tissueTypes[label +1]}
-		if (R_DEBUG_rmincIO) cat(sprintf("processing label %s\n", label_name))
-		cat(sprintf("Debug: volume.explodeLabelVolume: processing label %s\n", label_name))
+		if ( opt$debug ) cat(sprintf("... processing label %s\n", label_name))
 		
 		# compute the mask
 		#cat(sprintf("processing label %s\n", label_name))
@@ -74,7 +73,7 @@ volume.explodeLabelVolume <- function(label_vol, labels=NULL, civetLabels=TRUE) 
 # Example:
 #	labelVolname <- civet.getFilenameClassify(scanID, baseDir)
 #	label_vol <- mincIO.readVolume(labelVolname)
-#	vol_list <- volume.explodeLabelVolume(label_vol)
+#	vol_list <- volume.explodeLabelVolume(label_vol, opt)
 #
 #	# ... remove background component -- combine the rest
 #	xl <- list(vol_list$gm, vol_list$wm, vol_list$csf)

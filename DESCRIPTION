@@ -1,11 +1,11 @@
 Package: rmincIO
-Version: 1.9.8
-Date: 2017-03-07
+Version: 2.0
+Date: 2018-03-21
 Title: Package for reading and writing MINC2 files
 Author: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Maintainer: Jim Nikelski <nikelski@bic.mni.mcgill.ca>
 Description: A package for reading and writing MINC2 files.
-Depends: R (>= 2.12.0), grDevices, methods, Rcpp (>= 0.9.10), grid, lattice
+Depends: R (>= 3.3.0), grDevices, methods, Rcpp (>= 0.9.10), grid, lattice
 LinkingTo: Rcpp
 Suggests:
 License: BSD
